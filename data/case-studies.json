@@ -3,7 +3,7 @@
     {
       "id": 1, "slug": "px-01-signals", "title": "ShopUp Signals — podcast launch",
       "role": "Planned and managed end to end", "year": "2023",
-      "cover": "/assets/work/case-studies/px-01-signals/cover.webp",
+      "cover": "assets/work/case-studies/px-01-signals/cover.webp",
       "featured": true, "order": 1,
       "stats": [
         { "value": 4, "suffix": " wks", "label": "brief to first episode" },
@@ -20,7 +20,7 @@
     {
       "id": 2, "slug": "px-02-redx-coverage", "title": "REDX — Active coverage campaign",
       "role": "Creative direction + motion", "year": "2024",
-      "cover": "/assets/work/case-studies/px-02-redx-coverage/cover.webp",
+      "cover": "assets/work/case-studies/px-02-redx-coverage/cover.webp",
       "featured": true, "order": 2,
       "stats": [
         { "value": 2, "suffix": " markets", "label": "one campaign system" },

@@ -89,8 +89,6 @@ export function initFeedback() {
       `Section: ${selected ? selected.name : '(whole page / general)'}`,
       '',
       textEl.value.trim() || '(describe the change)',
-      '',
-      'Please apply this to the site.',
     ]
     return lines.join('\n')
   }

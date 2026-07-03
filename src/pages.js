@@ -30,7 +30,7 @@ function cardHTML(item, type) {
     ? `<video muted loop playsinline preload="metadata" poster="${item.cover}" src="${item.video}"></video>`
     : `<img src="${item.cover}" alt="${item.title}" loading="lazy" />`
   return `
-    <a class="work-card" href="/work.html?type=${type}&slug=${item.slug}">
+    <a class="work-card" href="work.html?type=${type}&slug=${item.slug}">
       <div class="frame frame--natural">${media}</div>
       <div class="card-meta">
         <span class="card-title t-h3">${item.title}</span>
@@ -51,7 +51,7 @@ async function initListing(type) {
       .filter((it) => it.status !== 'soon')
       .map(
         (it) => `<div class="index-row">
-          <a href="/work.html?type=web&slug=${it.slug}"><span class="row-title">${it.title}</span></a>
+          <a href="work.html?type=web&slug=${it.slug}"><span class="row-title">${it.title}</span></a>
           <span class="row-meta t-label">${it.stack} · ${it.year}</span>
           ${
             it.url && it.url !== '#'
@@ -114,7 +114,7 @@ async function initWork() {
   }
 
   const next = items[(items.indexOf(item) + 1) % items.length]
-  $('.next-link').href = `/work.html?type=${type}&slug=${next.slug}`
+  $('.next-link').href = `work.html?type=${type}&slug=${next.slug}`
   $('.next-link .next-title').textContent = next.title
 
   pageEnter()
@@ -140,7 +140,7 @@ async function initCase() {
   $('.prose').innerHTML = [cs.summary, ...(cs.body || [])].map((p) => `<p>${p}</p>`).join('')
 
   const next = items[(items.indexOf(cs) + 1) % items.length]
-  $('.next-link').href = `/case-study.html?slug=${next.slug}`
+  $('.next-link').href = `case-study.html?slug=${next.slug}`
   $('.next-link .next-title').textContent = next.title
 
   pageEnter()

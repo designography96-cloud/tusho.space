@@ -7,7 +7,7 @@ const $ = (sel, root = document) => root.querySelector(sel)
 
 /* ————————————————— renderers ————————————————— */
 
-const WID_LINKS = ['/motion.html', '/brand.html', '/web.html']
+const WID_LINKS = ['motion.html', 'brand.html', 'web.html']
 
 export function renderWhatIDo(items) {
   $('.s-whatido .wid-rows').innerHTML = items
@@ -28,7 +28,7 @@ function cardHTML(item, type) {
     ? `<video muted loop playsinline preload="metadata" poster="${item.cover}" src="${item.video}"></video>`
     : `<img src="${item.cover}" alt="${item.title}" loading="lazy" />`
   return `
-    <a class="work-card" href="/work.html?type=${type}&slug=${item.slug}" data-speed="${0.85 + Math.abs((item.order * 7) % 7) * 0.05}">
+    <a class="work-card" href="work.html?type=${type}&slug=${item.slug}" data-speed="${0.85 + Math.abs((item.order * 7) % 7) * 0.05}">
       <div class="frame frame--natural">${media}</div>
       <div class="card-meta">
         <span class="card-title t-h3">${item.title}</span>
@@ -40,7 +40,7 @@ function cardHTML(item, type) {
 export function renderMotion(items) {
   $('.s-motion .cloud').innerHTML =
     items.map((it) => cardHTML(it, 'motion')).join('') +
-    `<a class="mo-more btn-line t-label" href="/motion.html"><span class="btn-rule"></span>See all motion</a>`
+    `<a class="mo-more btn-line t-label" href="motion.html"><span class="btn-rule"></span>See all motion</a>`
 }
 
 export function renderBrand(items) {
@@ -48,7 +48,7 @@ export function renderBrand(items) {
     .map(
       (it) => `
       <div class="brand-entry">
-        <a class="work-card" href="/work.html?type=brand&slug=${it.slug}">
+        <a class="work-card" href="work.html?type=brand&slug=${it.slug}">
           <div class="frame frame--natural"><img src="${it.cover}" alt="${it.title}" loading="lazy" /></div>
         </a>
         <aside class="brand-notes">
@@ -56,7 +56,7 @@ export function renderBrand(items) {
           <h3 class="t-h3">${it.title}</h3>
           <p class="t-body">${it.summary}</p>
           <div class="brand-tags">${(it.tags || []).map((t) => `<span class="t-label">${t}</span>`).join('')}</div>
-          <a class="btn-line t-label" href="/work.html?type=brand&slug=${it.slug}"><span class="btn-rule"></span>View project</a>
+          <a class="btn-line t-label" href="work.html?type=brand&slug=${it.slug}"><span class="btn-rule"></span>View project</a>
         </aside>
       </div>`
     )
@@ -69,7 +69,7 @@ export function webRowHTML(it) {
       ? `<a class="row-live t-label" href="${it.url}" target="_blank" rel="noreferrer">Live ↗</a>`
       : `<span class="row-live t-label muted">Link soon</span>`
   return `<div class="index-row">
-    <a href="/work.html?type=web&slug=${it.slug}"><span class="row-title">${it.title}</span></a>
+    <a href="work.html?type=web&slug=${it.slug}"><span class="row-title">${it.title}</span></a>
     <span class="row-meta t-label">${it.stack} · ${it.year}</span>
     ${live}
     ${it.cover ? `<span class="row-thumb frame"><img src="${it.cover}" alt="" loading="lazy" /></span>` : ''}
@@ -90,7 +90,7 @@ export function renderCases(items) {
     .map(
       (cs) => `
       <div class="case-entry">
-        <a class="case-media" href="/case-study.html?slug=${cs.slug}">
+        <a class="case-media" href="case-study.html?slug=${cs.slug}">
           <div class="frame"><img src="${cs.cover}" alt="${cs.title}" loading="lazy" /></div>
         </a>
         <div class="case-body">
@@ -109,7 +109,7 @@ export function renderCases(items) {
               )
               .join('')}
           </div>
-          <a class="btn-line t-label" href="/case-study.html?slug=${cs.slug}" style="margin-top:24px">
+          <a class="btn-line t-label" href="case-study.html?slug=${cs.slug}" style="margin-top:24px">
             <span class="btn-rule"></span>Read the story
           </a>
         </div>

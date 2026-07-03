@@ -3,8 +3,8 @@
     {
       "id": 1, "slug": "px-01-redx-glitch", "title": "REDX — Merchant campaign",
       "client": "REDX", "year": "2024", "tags": ["Dynamic ad", "Campaign"],
-      "cover": "/assets/work/motion/px-01-redx-glitch/poster.webp",
-      "video": "/assets/work/motion/px-01-redx-glitch/loop.mp4",
+      "cover": "assets/work/motion/px-01-redx-glitch/poster.webp",
+      "video": "assets/work/motion/px-01-redx-glitch/loop.mp4",
       "featured": true, "order": 1,
       "summary": "A glitch-led dynamic ad for a merchant acquisition push — loud where it counts, quiet everywhere else.",
       "body": ["Placeholder writeup. The brief asked for attention without noise: a system of glitch hits timed to the message beats, so the offer lands before the scroll moves on.", "Real project copy replaces this when final assets arrive."]
@@ -12,8 +12,8 @@
     {
       "id": 2, "slug": "px-02-tahmid-intro", "title": "Tahmid — Dynamic intro",
       "client": "REDX", "year": "2024", "tags": ["Intro AV", "Identity in motion"],
-      "cover": "/assets/work/motion/px-02-tahmid-intro/poster.webp",
-      "video": "/assets/work/motion/px-02-tahmid-intro/loop.mp4",
+      "cover": "assets/work/motion/px-02-tahmid-intro/poster.webp",
+      "video": "assets/work/motion/px-02-tahmid-intro/loop.mp4",
       "featured": true, "order": 2,
       "summary": "A personal intro AV built as a signature — one identity, set in motion.",
       "body": ["Placeholder writeup. A short-form dynamic intro that treats a name like a brand: consistent rhythm, decisive cuts, no filler frames."]
@@ -21,8 +21,8 @@
     {
       "id": 3, "slug": "px-03-khelowar-chess", "title": "Khelowar — Chess dynamic",
       "client": "Khelowar", "year": "2022", "tags": ["Event", "Dynamic"],
-      "cover": "/assets/work/motion/px-03-khelowar-chess/poster.webp",
-      "video": "/assets/work/motion/px-03-khelowar-chess/loop.mp4",
+      "cover": "assets/work/motion/px-03-khelowar-chess/poster.webp",
+      "video": "assets/work/motion/px-03-khelowar-chess/loop.mp4",
       "featured": true, "order": 3,
       "summary": "Competition announcement built on the board's own geometry.",
       "body": ["Placeholder writeup. The chessboard grid became the layout system; every move in the edit follows a legal move on the board."]
@@ -30,8 +30,8 @@
     {
       "id": 4, "slug": "px-04-mokam-anchor", "title": "Mokam — Anchor AV",
       "client": "Mokam", "year": "2023", "tags": ["Broadcast", "AV"],
-      "cover": "/assets/work/motion/px-04-mokam-anchor/poster.webp",
-      "video": "/assets/work/motion/px-04-mokam-anchor/loop.mp4",
+      "cover": "assets/work/motion/px-04-mokam-anchor/poster.webp",
+      "video": "assets/work/motion/px-04-mokam-anchor/loop.mp4",
       "featured": true, "order": 4,
       "summary": "Anchor package for a commerce brand — steady tempo, clear hierarchy.",
       "body": ["Placeholder writeup. Built to run behind a speaking anchor: motion that supports the message rather than competing with it."]
@@ -39,8 +39,8 @@
     {
       "id": 5, "slug": "px-05-code-zero", "title": "ShopUp — Code Zero",
       "client": "ShopUp", "year": "2023", "tags": ["Internal launch", "AV"],
-      "cover": "/assets/work/motion/px-05-code-zero/poster.webp",
-      "video": "/assets/work/motion/px-05-code-zero/loop.mp4",
+      "cover": "assets/work/motion/px-05-code-zero/poster.webp",
+      "video": "assets/work/motion/px-05-code-zero/loop.mp4",
       "featured": true, "order": 5,
       "summary": "A countdown AV for an engineering culture moment — zero bugs, zero drama.",
       "body": ["Placeholder writeup. The concept ran on a single device: a counter that refuses to move until the work is right."]
@@ -48,8 +48,8 @@
     {
       "id": 6, "slug": "px-06-shopup-intro", "title": "ShopUp — Startup Awards intro",
       "client": "ShopUp", "year": "2023", "tags": ["Event", "Intro AV"],
-      "cover": "/assets/work/motion/px-06-shopup-intro/poster.webp",
-      "video": "/assets/work/motion/px-06-shopup-intro/loop.mp4",
+      "cover": "assets/work/motion/px-06-shopup-intro/poster.webp",
+      "video": "assets/work/motion/px-06-shopup-intro/loop.mp4",
       "featured": true, "order": 6,
       "summary": "Stage intro for a national startup awards night — confident, fast, exact.",
       "body": ["Placeholder writeup. Cut to the venue's LED specs and the host's walk-on timing; motion as stage management."]
@@ -57,7 +57,7 @@
     {
       "id": 7, "slug": "px-07-land-rover", "title": "Land Rover Defender — Camel Trophy",
       "client": "Personal", "year": "2022", "tags": ["3D", "Teaser"],
-      "cover": "/assets/work/motion/px-07-land-rover/poster.webp",
+      "cover": "assets/work/motion/px-07-land-rover/poster.webp",
       "video": null,
       "featured": true, "order": 7,
       "summary": "A tribute teaser to the Defender 110 — mud, grit, geometry.",
@@ -66,7 +66,7 @@
     {
       "id": 8, "slug": "px-08-pagani", "title": "Pagani Zonda — Black F",
       "client": "Personal", "year": "2022", "tags": ["3D", "Automotive"],
-      "cover": "/assets/work/motion/px-08-pagani/poster.webp",
+      "cover": "assets/work/motion/px-08-pagani/poster.webp",
       "video": null,
       "featured": true, "order": 8,
       "summary": "Automotive motion study — carbon, light, and patience.",

@@ -39,9 +39,9 @@
     "hobbies": {
       "heading": "Life outside the studio",
       "items": [
-        { "title": "Riding", "description": "A long ride gives you exactly the headspace a difficult brief needs.", "image": "/assets/hobbies/riding.webp", "link": "" },
-        { "title": "Football", "description": "Weekend pitch. Calm under pressure is a transferable skill.", "image": "/assets/hobbies/football.webp", "link": "" },
-        { "title": "Drums", "description": "Timing, dynamics, restraint. Same instincts, different instrument.", "image": "/assets/hobbies/drums.webp", "link": "" }
+        { "title": "Riding", "description": "A long ride gives you exactly the headspace a difficult brief needs.", "image": "assets/hobbies/riding.webp", "link": "" },
+        { "title": "Football", "description": "Weekend pitch. Calm under pressure is a transferable skill.", "image": "assets/hobbies/football.webp", "link": "" },
+        { "title": "Drums", "description": "Timing, dynamics, restraint. Same instincts, different instrument.", "image": "assets/hobbies/drums.webp", "link": "" }
       ]
     },
     "footer": {

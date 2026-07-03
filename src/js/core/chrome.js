@@ -7,12 +7,12 @@ import { initObject } from './object3d.js'
 import { initFeedback } from './feedback.js'
 
 const NAV_LEFT = [
-  { href: '/motion.html', label: 'Motion', page: 'motion' },
-  { href: '/brand.html', label: 'Brand', page: 'brand' },
+  { href: 'motion.html', label: 'Motion', page: 'motion' },
+  { href: 'brand.html', label: 'Brand', page: 'brand' },
 ]
 const NAV_RIGHT = [
-  { href: '/web.html', label: 'Web', page: 'web' },
-  { href: '/about.html', label: 'About', page: 'about' },
+  { href: 'web.html', label: 'Web', page: 'web' },
+  { href: 'about.html', label: 'About', page: 'about' },
 ]
 
 const navHTML = (items, page) =>
@@ -36,7 +36,7 @@ export function injectChrome() {
   header.innerHTML = `
     <nav class="site-nav site-nav--left t-label" aria-label="Work">${navHTML(NAV_LEFT, page)}</nav>
     <span class="brand-mark">
-      <a class="brand-home" href="/" aria-label="Tusho — home">${markWithFill}</a>
+      <a class="brand-home" href="./" aria-label="Tusho — home">${markWithFill}</a>
       <button class="o-toggle" type="button" aria-label="Switch between dark and light mode"></button>
     </span>
     <nav class="site-nav site-nav--right t-label" aria-label="Pages">${navHTML(NAV_RIGHT, page)}</nav>`

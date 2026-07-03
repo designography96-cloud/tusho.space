@@ -3,12 +3,12 @@
     {
       "id": 1, "slug": "px-01-bumble-bee", "title": "Bumble Bee",
       "client": "Bumble Bee", "year": "2021", "tags": ["Logo", "Identity"],
-      "cover": "/assets/work/brand-identity/px-01-bumble-bee/01.webp",
+      "cover": "assets/work/brand-identity/px-01-bumble-bee/01.webp",
       "images": [
-        "/assets/work/brand-identity/px-01-bumble-bee/01.webp",
-        "/assets/work/brand-identity/px-01-bumble-bee/02.webp",
-        "/assets/work/brand-identity/px-01-bumble-bee/03.webp",
-        "/assets/work/brand-identity/px-01-bumble-bee/04.webp"
+        "assets/work/brand-identity/px-01-bumble-bee/01.webp",
+        "assets/work/brand-identity/px-01-bumble-bee/02.webp",
+        "assets/work/brand-identity/px-01-bumble-bee/03.webp",
+        "assets/work/brand-identity/px-01-bumble-bee/04.webp"
       ],
       "featured": true, "order": 1,
       "summary": "A logo built to survive signage, embroidery, and a 16px favicon.",
@@ -17,13 +17,13 @@
     {
       "id": 2, "slug": "px-02-nilambala", "title": "Nilambala",
       "client": "Nilambala", "year": "2021", "tags": ["Identity", "Guidelines"],
-      "cover": "/assets/work/brand-identity/px-02-nilambala/01.webp",
+      "cover": "assets/work/brand-identity/px-02-nilambala/01.webp",
       "images": [
-        "/assets/work/brand-identity/px-02-nilambala/01.webp",
-        "/assets/work/brand-identity/px-02-nilambala/02.webp",
-        "/assets/work/brand-identity/px-02-nilambala/03.webp",
-        "/assets/work/brand-identity/px-02-nilambala/04.webp",
-        "/assets/work/brand-identity/px-02-nilambala/05.webp"
+        "assets/work/brand-identity/px-02-nilambala/01.webp",
+        "assets/work/brand-identity/px-02-nilambala/02.webp",
+        "assets/work/brand-identity/px-02-nilambala/03.webp",
+        "assets/work/brand-identity/px-02-nilambala/04.webp",
+        "assets/work/brand-identity/px-02-nilambala/05.webp"
       ],
       "featured": true, "order": 2,
       "summary": "Full identity system — from flyer to storefront, one voice.",
@@ -32,10 +32,10 @@
     {
       "id": 3, "slug": "px-03-abrar-trading", "title": "Abrar Trading",
       "client": "Abrar Trading", "year": "2021", "tags": ["Logo", "Wordmark"],
-      "cover": "/assets/work/brand-identity/px-03-abrar-trading/01.webp",
+      "cover": "assets/work/brand-identity/px-03-abrar-trading/01.webp",
       "images": [
-        "/assets/work/brand-identity/px-03-abrar-trading/01.webp",
-        "/assets/work/brand-identity/px-03-abrar-trading/02.webp"
+        "assets/work/brand-identity/px-03-abrar-trading/01.webp",
+        "assets/work/brand-identity/px-03-abrar-trading/02.webp"
       ],
       "featured": true, "order": 3,
       "summary": "A trading house wordmark — stable, exact, built to be trusted.",
@@ -44,14 +44,14 @@
     {
       "id": 4, "slug": "px-04-giftorita", "title": "Giftorita",
       "client": "Giftorita", "year": "2022", "tags": ["Social system", "Campaign"],
-      "cover": "/assets/work/brand-identity/px-04-giftorita/01.webp",
+      "cover": "assets/work/brand-identity/px-04-giftorita/01.webp",
       "images": [
-        "/assets/work/brand-identity/px-04-giftorita/01.webp",
-        "/assets/work/brand-identity/px-04-giftorita/02.webp",
-        "/assets/work/brand-identity/px-04-giftorita/03.webp",
-        "/assets/work/brand-identity/px-04-giftorita/04.webp",
-        "/assets/work/brand-identity/px-04-giftorita/05.webp",
-        "/assets/work/brand-identity/px-04-giftorita/06.webp"
+        "assets/work/brand-identity/px-04-giftorita/01.webp",
+        "assets/work/brand-identity/px-04-giftorita/02.webp",
+        "assets/work/brand-identity/px-04-giftorita/03.webp",
+        "assets/work/brand-identity/px-04-giftorita/04.webp",
+        "assets/work/brand-identity/px-04-giftorita/05.webp",
+        "assets/work/brand-identity/px-04-giftorita/06.webp"
       ],
       "featured": true, "order": 4,
       "summary": "A social content system that stays on-brand at posting speed.",
