@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "slug": "px-01-seetrue",
+      "title": "Seetrue",
+      "client": "Seetrue",
+      "year": "2026",
+      "stack": "HTML · CSS · JS",
+      "status": "live",
+      "url": "https://designography96-cloud.github.io/seetrue-demo/",
+      "cover": "/assets/work/web/px-01/cover.webp",
+      "featured": true,
+      "order": 1,
+      "summary": "Fashion-house web experience — directed and built end to end.",
+      "body": [
+        "Placeholder writeup. Live link and final screenshots to be added."
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "px-02-akhavan",
+      "title": "Akhavan Collection",
+      "client": "Akhavan Collection",
+      "year": "2026",
+      "stack": "HTML · CSS · JS",
+      "status": "live",
+      "url": "#",
+      "cover": "/assets/work/web/px-02/cover.webp",
+      "featured": true,
+      "order": 2,
+      "summary": "Art gallery venue site — monochrome, day and night modes.",
+      "body": [
+        "Placeholder writeup. Live link and final screenshots to be added."
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "px-03-fina",
+      "title": "Fina",
+      "client": "Fina",
+      "year": "2026",
+      "stack": "Next.js · SQLite",
+      "status": "live",
+      "url": "#",
+      "cover": "/assets/work/web/px-03/cover.webp",
+      "featured": true,
+      "order": 3,
+      "summary": "Brand toolkit platform — profile decks generated, not rebuilt.",
+      "body": [
+        "Placeholder writeup. Live link and final screenshots to be added."
+      ]
+    }
+  ]
+}

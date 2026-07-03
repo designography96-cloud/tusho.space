@@ -1,0 +1,455 @@
+/* ————— site chrome — wordmark centered, nav split to the edges ————— */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 20px var(--margin);
+  mix-blend-mode: difference;
+  color: var(--paper);
+}
+
+.site-header a,
+.site-header button {
+  color: inherit;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 40px);
+}
+
+.site-nav--left {
+  justify-self: start;
+}
+
+.site-nav--right {
+  justify-self: end;
+}
+
+.site-nav a {
+  position: relative;
+  padding-block: 4px;
+}
+
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--dur-hover) var(--ease-expo);
+}
+
+.site-nav a:hover::after,
+.site-nav a[aria-current='page']::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.brand-mark {
+  display: block;
+  width: clamp(84px, 9vw, 116px);
+  position: relative;
+  justify-self: center;
+}
+
+.brand-mark svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+  overflow: visible;
+}
+
+/* day/night lives inside the O of the logo — click it to flip the world */
+.brand-mark .o-fill {
+  r: 0;
+  transition: r var(--dur-hover) var(--ease-expo);
+}
+
+html[data-theme='light'] .brand-mark .o-fill {
+  r: 17px;
+}
+
+.o-toggle {
+  position: absolute;
+  top: -8%;
+  right: -4%;
+  width: 40%;
+  height: 94%;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.o-toggle:hover ~ svg .o-fill,
+.brand-mark:has(.o-toggle:hover) .o-fill {
+  r: 6px;
+}
+
+html[data-theme='light'] .brand-mark:has(.o-toggle:hover) .o-fill {
+  r: 12px;
+}
+
+/* scroll progress — the spine's drawn length, replacing the scrollbar at the right edge */
+.spine-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100vh;
+  background: var(--stroke);
+  transform-origin: top center;
+  transform: scaleY(0);
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* ————— buttons ————— */
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 8px;
+  position: relative;
+}
+
+.btn-line .btn-rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--stroke);
+  transform-origin: left center;
+  transition: transform var(--dur-hover) var(--ease-expo);
+}
+
+.btn-line:hover .btn-rule {
+  transform: scaleX(1.6);
+}
+
+/* ————— work cards ————— */
+.work-card {
+  display: block;
+  position: relative;
+}
+
+.work-card .card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding-block: 12px 0;
+}
+
+.work-card .card-meta .t-label {
+  color: var(--muted);
+}
+
+.work-card:hover .card-title {
+  transform: translateX(8px);
+}
+
+.card-title {
+  transition: transform var(--dur-hover) var(--ease-expo);
+  display: inline-block;
+}
+
+/* ————— index rows (web projects / listing pages) ————— */
+.index-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: var(--gutter);
+  padding-block: clamp(20px, 3vh, 36px);
+  position: relative;
+  border-bottom: 1px solid var(--line);
+}
+
+.index-row .row-live {
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.index-row a.row-live {
+  color: var(--stroke);
+  border-bottom: 1px solid var(--stroke);
+}
+
+.index-row .row-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  transition: transform var(--dur-hover) var(--ease-expo);
+}
+
+.index-row:hover .row-title {
+  transform: translateX(12px);
+}
+
+.index-row .row-meta {
+  color: var(--muted);
+  text-align: right;
+}
+
+.index-row .row-thumb {
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  width: clamp(140px, 16vw, 240px);
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity var(--dur-hover) ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.index-row:hover .row-thumb {
+  opacity: 1;
+}
+
+.index-row--soon {
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* ————— page transition wipe ————— */
+.page-wipe {
+  position: fixed;
+  inset: 0;
+  background: var(--stroke);
+  transform: scaleY(0);
+  transform-origin: top center;
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* ————— preloader ————— */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid;
+  place-items: center;
+}
+
+html[data-theme='light'] .preloader {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.preloader .pre-mark {
+  width: clamp(72px, 10vw, 132px);
+  will-change: transform;
+}
+
+.preloader .pre-mark svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+  overflow: visible;
+}
+
+/* ————— feedback mode (press F) — owner authoring aid ————— */
+body.fb-on {
+  cursor: crosshair;
+}
+
+.fb-highlight {
+  position: fixed;
+  z-index: 110;
+  pointer-events: none;
+  border: 1.5px solid var(--stroke);
+  background: color-mix(in srgb, var(--stroke) 6%, transparent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.fb-highlight::after {
+  content: attr(data-name);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-100%);
+  background: var(--stroke);
+  color: var(--ground);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.fb-picked {
+  outline: 1.5px dashed var(--stroke);
+  outline-offset: -2px;
+}
+
+.fb-cue {
+  position: fixed;
+  z-index: 120;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--stroke);
+  color: var(--ground);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  display: none;
+  pointer-events: none;
+}
+
+.fb-panel {
+  position: fixed;
+  z-index: 120;
+  right: clamp(16px, 3vw, 40px);
+  bottom: clamp(16px, 3vw, 40px);
+  width: min(360px, calc(100vw - 32px));
+  background: var(--ground);
+  border: 1px solid var(--stroke);
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 20px 60px -20px color-mix(in srgb, var(--stroke) 40%, transparent);
+}
+
+.fb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fb-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.fb-x {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 3px 8px;
+}
+
+.fb-hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.fb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 1.4em;
+}
+
+.fb-empty {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+.fb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--stroke);
+  color: var(--ground);
+  padding: 4px 8px;
+}
+
+.fb-chip-x {
+  font-size: 0.9rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.fb-text {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--stroke);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.fb-text:focus {
+  outline: none;
+  border-color: var(--stroke);
+}
+
+.fb-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.fb-copy,
+.fb-clear {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border: 1px solid var(--stroke);
+}
+
+.fb-copy {
+  background: var(--stroke);
+  color: var(--ground);
+  flex: 1;
+}
+
+.fb-clear {
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+/* ————— THE OBJECT — 3D sculpture layer behind the content ————— */
+.object-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ————— hobby glyphs — single-stroke pictograms ————— */
+.glyph {
+  width: 56px;
+  height: 40px;
+}
+
+.glyph path,
+.glyph circle,
+.glyph line {
+  fill: none;
+  stroke: var(--stroke);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}

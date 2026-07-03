@@ -1,0 +1,59 @@
+{
+  "data": {
+    "meta": {
+      "title": "Tusho — Motion designer & creative problem solver",
+      "description": "Motion design, brand design and digital experiences by Tusho. Built in Bangladesh. Trusted globally."
+    },
+    "hero": {
+      "statement_1": "Makes the right things move.",
+      "statement_2": "Not decoration. Resolution.",
+      "note": "Creative problem solver working between Bangladesh and Europe. The site you are scrolling is the showreel."
+    },
+    "what_i_do": [
+      {
+        "title": "Motion design",
+        "description": "Brand films, dynamic idents, product stories. Frame by frame, made with intent."
+      },
+      {
+        "title": "Brand design",
+        "description": "Identities and guidelines that hold up long after the launch deck is closed."
+      },
+      {
+        "title": "Digital experiences",
+        "description": "Websites planned, directed and built — from first brief to final deploy."
+      }
+    ],
+    "how_i_think": {
+      "steps": [
+        { "title": "Listen", "description": "First and most important. The real problem is rarely the one written down." },
+        { "title": "Research", "description": "Read the market, the audience, the constraints. Instinct is earned, not guessed." },
+        { "title": "Plan", "description": "A clear route beats a fast start. Scope, sequence, and the quiet risks named early." },
+        { "title": "Execute", "description": "Craft with attention, shipped on time. The standard is set by the output." }
+      ]
+    },
+    "about_short": {
+      "heading": "A creative problem solver.",
+      "body": "Senior creative working between Bangladesh and Europe — leading teams, directing brands, and building the kind of work that travels. Lately: building tusho.space and a slate of motion-led brand projects.",
+      "cta": "More about me"
+    },
+    "hobbies": {
+      "heading": "Life outside the studio",
+      "items": [
+        { "title": "Riding", "description": "A long ride gives you exactly the headspace a difficult brief needs.", "image": "/assets/hobbies/riding.webp", "link": "" },
+        { "title": "Football", "description": "Weekend pitch. Calm under pressure is a transferable skill.", "image": "/assets/hobbies/football.webp", "link": "" },
+        { "title": "Drums", "description": "Timing, dynamics, restraint. Same instincts, different instrument.", "image": "/assets/hobbies/drums.webp", "link": "" }
+      ]
+    },
+    "footer": {
+      "heading": "Built in Bangladesh. Trusted globally.",
+      "email": "md.hossaintusher96@gmail.com",
+      "rights": "All rights reserved — Tusho",
+      "socials": [
+        { "label": "Behance", "url": "https://www.behance.net/designography96" },
+        { "label": "LinkedIn", "url": "https://www.linkedin.com/" },
+        { "label": "Instagram", "url": "https://www.instagram.com/" },
+        { "label": "YouTube", "url": "https://www.youtube.com/" }
+      ]
+    }
+  }
+}

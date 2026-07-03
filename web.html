@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web — Tusho</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tusho-wordmark-ink.svg" />
+    <script>
+      document.documentElement.dataset.theme =
+        (function () { try { return localStorage.getItem('tusho-theme') } catch (e) { return null } })() || 'light'
+    </script>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body data-page="web">
+    <main id="main" class="container">
+      <div class="page-hero">
+        <h1 class="page-title t-display"></h1>
+        <p class="page-intro t-body"></p>
+        <div class="rule" style="margin-top:32px" aria-hidden="true"></div>
+      </div>
+      <div class="listing-mount"></div>
+    </main>
+    <script type="module" src="/src/pages.js"></script>
+  </body>
+</html>

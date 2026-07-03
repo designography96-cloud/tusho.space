@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tusho — Motion designer & creative problem solver</title>
+    <meta name="description" content="Motion design, brand design and digital experiences by Tusho. Built in Bangladesh. Trusted globally." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tusho-wordmark-ink.svg" />
+    <script>
+      document.documentElement.dataset.theme =
+        (function () { try { return localStorage.getItem('tusho-theme') } catch (e) { return null } })() || 'light'
+    </script>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body data-page="home">
+    <div class="preloader" aria-hidden="true">
+      <div class="pre-mark">
+        <svg viewBox="104 -10 58 82" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+          <g class="pre-o">
+            <path d="M134.58,0c3.75,0,7.28.72,10.59,2.15,3.31,1.44,6.18,3.39,8.61,5.86,2.43,2.47,4.37,5.36,5.8,8.67,1.44,3.31,2.15,6.84,2.15,10.59s-.72,7.28-2.15,10.59c-1.44,3.31-3.37,6.18-5.8,8.61s-5.3,4.37-8.61,5.8c-3.31,1.44-6.84,2.15-10.59,2.15s-7.28-.72-10.59-2.15c-3.31-1.44-6.18-3.37-8.61-5.8-2.43-2.43-4.37-5.3-5.8-8.61-1.44-3.31-2.15-6.84-2.15-10.59s.72-7.28,2.15-10.59c1.44-3.31,3.37-6.2,5.8-8.67,2.43-2.47,5.3-4.43,8.61-5.86,3.31-1.44,6.84-2.15,10.59-2.15ZM134.58,51.44c3.35,0,6.5-.64,9.45-1.91,2.95-1.27,5.5-3.01,7.66-5.2,2.15-2.19,3.87-4.74,5.14-7.66,1.27-2.91,1.91-6.04,1.91-9.39s-.64-6.5-1.91-9.45c-1.28-2.95-2.99-5.5-5.14-7.66s-4.71-3.87-7.66-5.14c-2.95-1.27-6.1-1.91-9.45-1.91s-6.48.64-9.39,1.91c-2.91,1.28-5.46,2.99-7.66,5.14-2.19,2.15-3.93,4.71-5.2,7.66-1.28,2.95-1.91,6.1-1.91,9.45s.64,6.48,1.91,9.39c1.28,2.91,3.01,5.46,5.2,7.66,2.19,2.19,4.74,3.93,7.66,5.2,2.91,1.28,6.04,1.91,9.39,1.91Z"/>
+          </g>
+          <path class="pre-bar" d="M121.78,67.11h25.6v3.11h-25.6v-3.11Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <main id="main">
+      <!-- 1/2 · hero -->
+      <section class="s-hero section container" data-fbname="Hero">
+        <div class="hero-statements">
+          <h1 class="t-display hero-statement" data-statement="1"></h1>
+          <p class="t-display hero-statement" data-statement="2" aria-hidden="true"></p>
+        </div>
+        <p class="hero-note t-body"></p>
+        <span class="hero-scroll-hint t-label">Scroll</span>
+      </section>
+
+      <!-- 3 · what i do -->
+      <section class="s-whatido section container" data-fbname="What I do">
+        <div class="section-head">
+          <h2 class="t-h2">What I do</h2>
+        </div>
+        <div class="wid-rows"></div>
+      </section>
+
+      <!-- 4 · motion works -->
+      <section class="s-motion section container" data-fbname="Motion works">
+        <div class="section-head">
+          <a href="/motion.html" aria-label="See all motion works"><h2 class="t-h2 head-link">Motion works</h2></a>
+          <span class="head-label t-label">A glimpse</span>
+        </div>
+        <div class="cloud"></div>
+        <div class="see-all">
+          <a class="btn-line t-label" href="/motion.html"><span class="btn-rule"></span>See all motion</a>
+        </div>
+      </section>
+
+      <!-- 5 · brand works -->
+      <section class="s-brand section container" data-fbname="Brand design">
+        <div class="section-head">
+          <a href="/brand.html" aria-label="See all brand design work"><h2 class="t-h2 head-link">Brand design</h2></a>
+          <span class="head-label t-label">Up close</span>
+        </div>
+        <div class="brand-list"></div>
+        <div class="see-all" style="display:flex;justify-content:flex-end;margin-top:clamp(48px,10vh,120px)">
+          <a class="btn-line t-label" href="/brand.html"><span class="btn-rule"></span>See all brand work</a>
+        </div>
+      </section>
+
+      <!-- 6 · web projects -->
+      <section class="s-web section container" data-fbname="Website projects">
+        <div class="section-head">
+          <h2 class="t-h2">Website projects</h2>
+          <span class="head-label t-label">Directed and built</span>
+        </div>
+        <div class="index-list"></div>
+        <div class="see-all" style="display:flex;justify-content:flex-end;margin-top:clamp(48px,10vh,120px)">
+          <a class="btn-line t-label" href="/web.html"><span class="btn-rule"></span>See all web</a>
+        </div>
+      </section>
+
+      <!-- 7 · case studies -->
+      <section class="s-case section container" data-fbname="Case studies">
+        <div class="section-head">
+          <h2 class="t-h2">Case studies</h2>
+          <span class="head-label t-label">Problems, solved</span>
+        </div>
+        <div class="case-list"></div>
+      </section>
+
+      <!-- 8 · how i think -->
+      <section class="s-think section container" data-fbname="How I think">
+        <div class="section-head">
+          <h2 class="t-h2">How I think</h2>
+        </div>
+        <div class="think-words" aria-live="polite"></div>
+        <div class="think-track" aria-hidden="true"><div class="track-fill"></div></div>
+        <div class="think-stations"></div>
+      </section>
+
+      <!-- 9 · about short -->
+      <section class="s-about section container" data-fbname="About">
+        <div class="about-grid">
+          <div class="about-photo">
+            <div class="frame"><img src="/assets/about/portrait.webp" alt="Portrait of Tusho" loading="lazy" /></div>
+          </div>
+          <div class="about-text">
+            <h2 class="t-h2"></h2>
+            <p class="t-body"></p>
+            <a class="btn-line t-label about-cta" href="/about.html"><span class="btn-rule"></span><span>More about me</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 · hobbies -->
+      <section class="s-hobbies section container" data-fbname="Hobbies">
+        <div class="section-head">
+          <h2 class="t-h2 hobby-heading"></h2>
+          <span class="head-label t-label">Off the clock</span>
+        </div>
+        <div class="hobby-grid"></div>
+      </section>
+
+      <!-- 11 · footer -->
+      <footer class="s-footer section container" data-fbname="Footer">
+        <h2 class="footer-heading"></h2>
+        <a class="footer-email" href="#">
+          <span class="email-text"></span>
+          <span class="rule rule--stroke email-rule" aria-hidden="true"></span>
+        </a>
+        <div class="footer-rights t-label">
+          <div class="footer-socials"></div>
+          <span class="rights-text"></span>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

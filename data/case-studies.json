@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "id": 1, "slug": "px-01-signals", "title": "ShopUp Signals — podcast launch",
+      "role": "Planned and managed end to end", "year": "2023",
+      "cover": "/assets/work/case-studies/px-01-signals/cover.webp",
+      "featured": true, "order": 1,
+      "stats": [
+        { "value": 4, "suffix": " wks", "label": "brief to first episode" },
+        { "value": 3, "suffix": " teams", "label": "aligned on one calendar" },
+        { "value": 1, "suffix": " format", "label": "that survived season one" }
+      ],
+      "summary": "The brief had three problems: no format, no pipeline, no owner. Here's how we solved all of them.",
+      "body": [
+        "Placeholder writeup. A company podcast that needed to sound like the company — planned, formatted, and shipped on a repeatable pipeline.",
+        "Listen first: the real problem wasn't audio, it was ownership. One calendar, one format doc, one launch date that held.",
+        "Final numbers and production stills replace these placeholders when the archive is gathered."
+      ]
+    },
+    {
+      "id": 2, "slug": "px-02-redx-coverage", "title": "REDX — Active coverage campaign",
+      "role": "Creative direction + motion", "year": "2024",
+      "cover": "/assets/work/case-studies/px-02-redx-coverage/cover.webp",
+      "featured": true, "order": 2,
+      "stats": [
+        { "value": 2, "suffix": " markets", "label": "one campaign system" },
+        { "value": 6, "suffix": " cutdowns", "label": "from a single master" },
+        { "value": 1, "suffix": " sprint", "label": "concept to air" }
+      ],
+      "summary": "The challenge was clear. The path wasn't. This is what we figured out.",
+      "body": [
+        "Placeholder writeup. A coverage campaign built as a system: one master spot, cutdowns for every placement, no re-shoots.",
+        "Final campaign results and media replace these placeholders later."
+      ]
+    }
+  ]
+}

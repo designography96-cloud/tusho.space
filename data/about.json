@@ -1,0 +1,19 @@
+{
+  "data": {
+    "heading": "Built in Bangladesh. Trusted globally.",
+    "photo": "/assets/about/portrait.webp",
+    "intro": "Tusho is a senior creative professional who solves critical problems through clear, considered creative work. Not someone who decorates problems — someone who resolves them.",
+    "body": [
+      "Operating between Bangladesh and Europe, he leads teams and brands with the same quiet confidence he brings to everything else in his life: a rider, a drummer, a footballer, a builder.",
+      "The range runs from brand design and motion to creative direction and program management. Authority demonstrated through case studies, not stated in bios.",
+      "Lately: building tusho.space, directing a slate of motion-led brand projects, and documenting the craft along the way.",
+      "Placeholder copy in the brand voice — the owner replaces this with final text."
+    ],
+    "values": [
+      { "title": "Craft with attention", "description": "Details are not decoration — they are the work." },
+      { "title": "Authenticity first", "description": "Nothing here is performed for an audience. What you see is what exists." },
+      { "title": "Borderless perspective", "description": "Work that doesn't fit one market travels further." },
+      { "title": "Calm leadership", "description": "The work gets done without noise. Solutions are found without drama." }
+    ]
+  }
+}
