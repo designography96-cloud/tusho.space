@@ -5,9 +5,7 @@
       "description": "Motion design, brand design and digital experiences by Tusho. Built in Bangladesh. Trusted globally."
     },
     "hero": {
-      "statement_1": "Makes the right things move.",
-      "statement_2": "Not decoration. Resolution.",
-      "note": "Creative problem solver working between Bangladesh and Europe. The site you are scrolling is the showreel."
+      "tagline": "A creative problem solver who enjoys his work."
     },
     "what_i_do": [
       {
@@ -45,14 +43,14 @@
       ]
     },
     "footer": {
-      "heading": "Built in Bangladesh. Trusted globally.",
-      "email": "md.hossaintusher96@gmail.com",
+      "email": "tusho.space@gmail.com",
       "rights": "All rights reserved — Tusho",
       "socials": [
-        { "label": "Behance", "url": "https://www.behance.net/designography96" },
-        { "label": "LinkedIn", "url": "https://www.linkedin.com/" },
-        { "label": "Instagram", "url": "https://www.instagram.com/" },
-        { "label": "YouTube", "url": "https://www.youtube.com/" }
+        { "label": "Instagram", "url": "https://www.instagram.com/tushospace" },
+        { "label": "TikTok", "url": "https://www.tiktok.com/@tusho.space" },
+        { "label": "Facebook", "url": "https://www.facebook.com/tushospace" },
+        { "label": "YouTube", "url": "https://www.youtube.com/@tushospace" },
+        { "label": "LinkedIn", "url": "https://www.linkedin.com/company/tushospace" }
       ]
     }
   }
