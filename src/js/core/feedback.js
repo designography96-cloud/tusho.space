@@ -20,7 +20,8 @@ function sectionName(el) {
 }
 
 export function initFeedback() {
-  const targets = () => [...document.querySelectorAll('main section, main > *[class^="s-"], footer')]
+  const targets = () =>
+    [...document.querySelectorAll('main section, main > *[class^="s-"], footer, header.site-header')]
 
   let open = false
   let selected = null // { el, name } — exactly one section at a time
@@ -137,7 +138,7 @@ export function initFeedback() {
 
   // ——— section picking ———
   function closestTarget(node) {
-    const el = node.closest && node.closest('main section, main > [class^="s-"], footer')
+    const el = node.closest && node.closest('main section, main > [class^="s-"], footer, header.site-header')
     return el && el.closest('.fb-panel') ? null : el
   }
 

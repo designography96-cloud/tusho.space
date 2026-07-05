@@ -2,8 +2,11 @@
 import { gsap, ScrollTrigger } from './scroll.js'
 import { motionOK } from './env.js'
 import { toggleTheme } from './theme.js'
-import { wordmark } from './mark.js'
-import { initObject } from './object3d.js'
+import { wordmarkWithFill } from './mark.js'
+// object3d.js (the 3D sculpture) is kept in the codebase but not wired in —
+// swapped for the gradient field below. Re-import { initObject } and swap the
+// call in injectChrome() to bring the sculpture back.
+import { initGradientBackground } from './gradient-bg.js'
 import { initFeedback } from './feedback.js'
 
 const NAV_LEFT = [
@@ -22,31 +25,53 @@ const navHTML = (items, page) =>
     )
     .join('')
 
+// wires the O-toggle button (theme flip) — shared by the header logo and the
+// hero's big logo, since both are clickable instances of the same wordmark.
+export function wireOToggle(toggleEl) {
+  if (!toggleEl) return
+  toggleEl.addEventListener('click', (e) => {
+    e.preventDefault()
+    toggleTheme()
+  })
+}
+
+// a one-time "← click me" hint, blinked in near the O and dismissed on its
+// own — points first-time visitors at the theme toggle without lingering.
+export function showClickHint(toggleEl) {
+  if (!toggleEl || toggleEl.dataset.hintShown) return
+  toggleEl.dataset.hintShown = '1'
+  if (!motionOK) return
+
+  const hint = document.createElement('span')
+  hint.className = 'o-hint'
+  hint.setAttribute('aria-hidden', 'true')
+  hint.textContent = '← click me'
+  toggleEl.parentElement.appendChild(hint)
+
+  gsap.set(hint, { autoAlpha: 0, scale: 0.8 })
+  gsap
+    .timeline({ onComplete: () => hint.remove() })
+    .to(hint, { autoAlpha: 1, scale: 1, duration: 0.25, ease: 'back.out(3)' })
+    .to(hint, { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, '+=1.4')
+}
+
 export function injectChrome() {
   const page = document.body.dataset.page || 'home'
 
-  // day/night state lives inside the O of the logo
-  const markWithFill = wordmark.replace(
-    '</svg>',
-    '<circle class="o-fill" cx="134.58" cy="27.31" r="0"/></svg>'
-  )
-
   const header = document.createElement('header')
   header.className = 'site-header'
+  header.dataset.fbname = 'Header'
   header.innerHTML = `
     <nav class="site-nav site-nav--left t-label" aria-label="Work">${navHTML(NAV_LEFT, page)}</nav>
     <span class="brand-mark">
-      <a class="brand-home" href="./" aria-label="Tusho — home">${markWithFill}</a>
+      <a class="brand-home" href="./" aria-label="Tusho — home">${wordmarkWithFill}</a>
       <button class="o-toggle" type="button" aria-label="Switch between dark and light mode"></button>
     </span>
     <nav class="site-nav site-nav--right t-label" aria-label="Pages">${navHTML(NAV_RIGHT, page)}</nav>`
   document.body.prepend(header)
-  header.querySelector('.o-toggle').addEventListener('click', (e) => {
-    e.preventDefault()
-    toggleTheme()
-  })
+  wireOToggle(header.querySelector('.o-toggle'))
 
-  if (page === 'home') initObject()
+  if (page === 'home') initGradientBackground()
   initFeedback()
 
   // spine progress — the drawn length of the page

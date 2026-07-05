@@ -9,7 +9,8 @@
       "stack": "HTML · CSS · JS",
       "status": "live",
       "url": "https://designography96-cloud.github.io/seetrue-demo/",
-      "cover": "assets/work/web/px-01/cover.webp",
+      "cover": "assets/work/web/px-01/cover.png",
+      "images": ["assets/work/web/px-01/full.png"],
       "featured": true,
       "order": 1,
       "summary": "Fashion-house web experience — directed and built end to end.",
@@ -25,11 +26,30 @@
       "year": "2026",
       "stack": "HTML · CSS · JS",
       "status": "live",
-      "url": "#",
-      "cover": "assets/work/web/px-02/cover.webp",
+      "url": "https://designography96-cloud.github.io/akhavancollection/",
+      "cover": "assets/work/web/px-02/cover.png",
+      "images": ["assets/work/web/px-02/full.png"],
       "featured": true,
       "order": 2,
       "summary": "Art gallery venue site — monochrome, day and night modes.",
+      "body": [
+        "Placeholder writeup. Live link and final screenshots to be added."
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "px-04-die-schrothkur",
+      "title": "Die Schrothkur",
+      "client": "Die Schrothkur",
+      "year": "2026",
+      "stack": "Shopify",
+      "status": "live",
+      "url": "https://die-schrothkur.myshopify.com/",
+      "cover": "assets/work/web/px-04/cover.jpg",
+      "images": ["assets/work/web/px-04/full.png"],
+      "featured": true,
+      "order": 3,
+      "summary": "Storefront build on Shopify — directed and set up end to end.",
       "body": [
         "Placeholder writeup. Live link and final screenshots to be added."
       ]
@@ -42,10 +62,11 @@
       "year": "2026",
       "stack": "Next.js · SQLite",
       "status": "live",
-      "url": "#",
-      "cover": "assets/work/web/px-03/cover.webp",
+      "url": "https://designography96-cloud.github.io/fina-brand/",
+      "cover": "assets/work/web/px-03/cover.png",
+      "images": ["assets/work/web/px-03/full.png"],
       "featured": true,
-      "order": 3,
+      "order": 4,
       "summary": "Brand toolkit platform — profile decks generated, not rebuilt.",
       "body": [
         "Placeholder writeup. Live link and final screenshots to be added."

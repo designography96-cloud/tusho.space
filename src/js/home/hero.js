@@ -1,90 +1,141 @@
-// Hero — pinned scene. Statement one rises, the spine's rule draws beneath;
-// scrubbing inks the words (karaoke snap), strikes statement one through,
-// and rises statement two. Mobile / low tier: entrance only, both statements stacked.
-import { gsap, ScrollTrigger, SplitText } from '../core/scroll.js'
+// Hero — full-bleed logo intro. No title copy: the wordmark itself is the
+// opening statement. On scroll, the logo shrinks and rises to land exactly in
+// the header's logo slot (measured, not guessed), the header fades in behind
+// it, and the nav links arrive last. Mobile / reduced motion: skip the morph,
+// just reveal the header once scrolling begins.
+import { gsap, ScrollTrigger } from '../core/scroll.js'
 import { motionOK, heavy } from '../core/env.js'
-
-function wrapWords(el) {
-  const words = el.textContent.trim().split(/\s+/)
-  el.innerHTML = words.map((w) => `<span class="kw">${w}</span>`).join(' ')
-  return [...el.querySelectorAll('.kw')]
-}
+import { showClickHint } from '../core/chrome.js'
 
 export function initHero(afterPreloader) {
   const hero = document.querySelector('.s-hero')
   if (!hero) return
 
-  const st1 = hero.querySelector('[data-statement="1"]')
-  const st2 = hero.querySelector('[data-statement="2"]')
-  const note = hero.querySelector('.hero-note')
-  const hint = hero.querySelector('.hero-scroll-hint')
+  const logo = hero.querySelector('.hero-logo')
+  const tagline = hero.querySelector('.hero-tagline')
+  const cue = hero.querySelector('.hero-cue')
+  const header = document.querySelector('.site-header')
+  const headerLogo = header.querySelector('.brand-mark')
+  const navLeft = header.querySelector('.site-nav--left')
+  const navRight = header.querySelector('.site-nav--right')
+  let headerHintShown = false
+  const revealHeaderHint = () => {
+    if (headerHintShown) return
+    headerHintShown = true
+    showClickHint(headerLogo.querySelector('.o-toggle'))
+  }
 
-  const words1 = wrapWords(st1)
-  const words2 = wrapWords(st2)
-  // statement one lands confident — fully inked; the karaoke proof runs on statement two
-  words1.forEach((w) => w.classList.add('inked'))
+  gsap.set(header, { autoAlpha: 0 })
+  gsap.set([navLeft, navRight, headerLogo], { autoAlpha: 0 })
 
   if (!motionOK) {
-    words1.forEach((w) => w.classList.add('inked'))
-    st2.querySelectorAll('.kw').forEach((w) => w.classList.add('inked'))
+    gsap.set(header, { autoAlpha: 1 })
+    gsap.set([navLeft, navRight, headerLogo], { autoAlpha: 1 })
     return
   }
 
-  // ——— entrance (runs after the preloader resolves) ———
-  const split1 = SplitText.create(st1, { type: 'lines', mask: 'lines' })
-  gsap.set(split1.lines, { yPercent: 110 })
-  gsap.set([note, hint], { autoAlpha: 0, y: 24 })
+  gsap.set(logo, { autoAlpha: 0, y: 20 })
+  gsap.set(tagline, { autoAlpha: 0, y: 14, filter: 'blur(10px)' })
+  gsap.set(cue, { autoAlpha: 0, y: 14 })
 
-  afterPreloader.then(() => {
-    gsap
-      .timeline()
-      .to(split1.lines, { yPercent: 0, duration: 0.9, ease: 'expo.out', stagger: 0.08 })
-      .to(note, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4')
-      .to(hint, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.5')
-  })
+  const entrance = afterPreloader.then(
+    () =>
+      new Promise((resolve) => {
+        gsap
+          .timeline({ onComplete: resolve })
+          .to(logo, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out' })
+          .to(tagline, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' }, '-=0.55')
+          .to(cue, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.45')
+      })
+  )
+
+  entrance.then(() => showClickHint(logo.querySelector('.o-toggle')))
 
   if (!heavy) {
-    // no pin: show statement two statically below, fully inked
-    hero.querySelector('.hero-statements').style.display = 'block'
-    st2.querySelectorAll('.kw').forEach((w) => w.classList.add('inked'))
-    words1.forEach((w) => w.classList.add('inked'))
+    // no morph on mobile/low-tier: reveal the header as soon as any scroll happens
+    ScrollTrigger.create({
+      trigger: hero,
+      start: 'top top',
+      end: '+=10',
+      onEnter: () => {
+        gsap.to([header, navLeft, navRight, headerLogo], { autoAlpha: 1, duration: 0.4 })
+        revealHeaderHint()
+      },
+      onLeaveBack: () => gsap.to([header, navLeft, navRight, headerLogo], { autoAlpha: 0, duration: 0.3 }),
+    })
     return
   }
 
-  // ——— pinned scrub scene ———
-  const split2 = SplitText.create(st2, { type: 'lines', mask: 'lines' })
-  gsap.set(split2.lines, { yPercent: 110 })
+  // ——— the morph: measured against the real header logo, not guessed ———
+  entrance.then(() => {
+    let startRect, endRect
 
-  const strike = document.createElement('span')
-  strike.className = 'rule rule--stroke hero-strike'
-  strike.style.cssText =
-    'position:absolute;left:0;top:52%;width:100%;transform:scaleX(0);pointer-events:none;'
-  st1.style.position = 'relative'
-  st1.appendChild(strike)
-
-  ScrollTrigger.create({
-    trigger: hero,
-    start: 'top top',
-    end: '+=160%',
-    pin: true,
-    scrub: 0.5,
-    onUpdate(self) {
-      const p = self.progress
-      // phase 1 (.15 → .35): the pen strikes statement one through
-      gsap.set(strike, {
-        scaleX: gsap.utils.clamp(0, 1, (p - 0.15) / 0.2),
-        transformOrigin: 'left center',
+    function measure() {
+      const wasFixed = logo.style.position === 'fixed'
+      if (wasFixed) {
+        gsap.set(logo, { clearProps: 'position,left,top,width,margin,x,y,scale' })
+        gsap.set(tagline, { clearProps: 'position,left,top,width,margin' })
+      }
+      // the logo is the only other flex child besides the tagline (the cue
+      // is already absolutely positioned) — freeze the tagline's rect too
+      // before pulling the logo out of flow, or it re-centers into the gap
+      const taglineRect = tagline.getBoundingClientRect()
+      startRect = logo.getBoundingClientRect()
+      endRect = headerLogo.getBoundingClientRect()
+      gsap.set(tagline, {
+        position: 'fixed',
+        left: taglineRect.left,
+        top: taglineRect.top,
+        width: taglineRect.width,
+        margin: 0,
       })
-      // phase 2 (.35 → .55): statement one rises out
-      const out = gsap.utils.clamp(0, 1, (p - 0.35) / 0.2)
-      gsap.set(split1.lines, { yPercent: -110 * out })
-      gsap.set(strike, { autoAlpha: out < 1 ? 1 : 0 })
-      // phase 3 (.45 → .7): statement two rises in, muted
-      const inn = gsap.utils.clamp(0, 1, (p - 0.45) / 0.25)
-      gsap.set(split2.lines, { yPercent: 110 - 110 * inn })
-      // phase 4 (.7 → .95): karaoke — the pen inks statement two word by word
-      const inked = Math.floor(gsap.utils.clamp(0, 1, (p - 0.7) / 0.25) * words2.length)
-      words2.forEach((w, i) => w.classList.toggle('inked', i < inked))
-    },
+      gsap.set(logo, {
+        position: 'fixed',
+        left: startRect.left,
+        top: startRect.top,
+        width: startRect.width,
+        margin: 0,
+        zIndex: 45,
+      })
+    }
+    measure()
+
+    gsap.set(header, { autoAlpha: 1 })
+
+    ScrollTrigger.create({
+      trigger: hero,
+      start: 'top top',
+      end: '+=100%',
+      scrub: 0.6,
+      invalidateOnRefresh: true,
+      onRefresh: measure,
+      onUpdate(self) {
+        const p = self.progress
+        const startCx = startRect.left + startRect.width / 2
+        const startCy = startRect.top + startRect.height / 2
+        const endCx = endRect.left + endRect.width / 2
+        const endCy = endRect.top + endRect.height / 2
+        const scale = gsap.utils.interpolate(1, endRect.width / startRect.width, p)
+        gsap.set(logo, {
+          x: gsap.utils.interpolate(0, endCx - startCx, p),
+          y: gsap.utils.interpolate(0, endCy - startCy, p),
+          scale,
+          transformOrigin: '50% 50%',
+        })
+
+        const fadeOut = 1 - gsap.utils.clamp(0, 1, p / 0.3)
+        gsap.set(tagline, { autoAlpha: fadeOut, filter: `blur(${(1 - fadeOut) * 10}px)` })
+        gsap.set(cue, { autoAlpha: fadeOut })
+
+        const navP = gsap.utils.clamp(0, 1, (p - 0.55) / 0.4)
+        gsap.set([navLeft, navRight], { autoAlpha: navP })
+
+        // crossfade the flying logo for the real header logo right at the finish
+        const landed = p > 0.985
+        gsap.set(logo, { autoAlpha: landed ? 0 : 1 })
+        gsap.set(headerLogo, { autoAlpha: landed ? 1 : 0 })
+        if (landed) revealHeaderHint()
+      },
+    })
   })
 }

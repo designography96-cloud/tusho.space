@@ -23,35 +23,37 @@ export function renderWhatIDo(items) {
     .join('')
 }
 
-function cardHTML(item, type) {
-  const media = item.video
-    ? `<video muted loop playsinline preload="metadata" poster="${item.cover}" src="${item.video}"></video>`
-    : `<img src="${item.cover}" alt="${item.title}" loading="lazy" />`
-  return `
-    <a class="work-card" href="work.html?type=${type}&slug=${item.slug}" data-speed="${0.85 + Math.abs((item.order * 7) % 7) * 0.05}">
-      <div class="frame frame--natural">${media}</div>
-      <div class="card-meta">
-        <span class="card-title t-h3">${item.title}</span>
-        <span class="t-label">${item.client || ''} ${item.year ? '· ' + item.year : ''}</span>
-      </div>
-    </a>`
-}
-
+// a titled list, each row hover-blurring its siblings while a cursor-following
+// preview (video if we have one, else the cover still) shows the work itself —
+// the "portfolio hover effect" pattern, not a static grid.
 export function renderMotion(items) {
-  $('.s-motion .cloud').innerHTML =
-    items.map((it) => cardHTML(it, 'motion')).join('') +
-    `<a class="mo-more btn-line t-label" href="motion.html"><span class="btn-rule"></span>See all motion</a>`
+  $('.s-motion .motion-list').innerHTML = items
+    .map(
+      (it, i) => `
+      <a class="motion-row" href="work.html?type=motion&slug=${it.slug}" data-cover="${it.cover}" data-video="${it.video || ''}">
+        <div class="rule" aria-hidden="true"></div>
+        <span class="motion-row-index t-label">${String(i + 1).padStart(2, '0')}</span>
+        <h3 class="motion-row-title">${it.title}</h3>
+        <span class="motion-row-meta t-label">${it.client || ''} ${it.year ? '· ' + it.year : ''}</span>
+      </a>`
+    )
+    .join('')
 }
 
+// the visual rests in duotone (grayscale) and washes into full color from
+// wherever the cursor sits — a deliberate reveal, not a static photo.
 export function renderBrand(items) {
   $('.s-brand .brand-list').innerHTML = items
     .map(
       (it) => `
       <div class="brand-entry">
         <a class="work-card" href="work.html?type=brand&slug=${it.slug}">
-          <div class="frame frame--natural"><img src="${it.cover}" alt="${it.title}" loading="lazy" /></div>
+          <div class="frame frame--natural brand-visual">
+            <img class="brand-visual-color" src="${it.cover}" alt="${it.title}" loading="lazy" />
+            <img class="brand-visual-mono" src="${it.cover}" alt="" aria-hidden="true" loading="lazy" />
+          </div>
         </a>
-        <aside class="brand-notes">
+        <aside class="brand-notes glass">
           <span class="t-label muted">${it.client} · ${it.year}</span>
           <h3 class="t-h3">${it.title}</h3>
           <p class="t-body">${it.summary}</p>
@@ -63,55 +65,79 @@ export function renderBrand(items) {
     .join('')
 }
 
-export function webRowHTML(it) {
-  const live =
-    it.url && it.url !== '#'
-      ? `<a class="row-live t-label" href="${it.url}" target="_blank" rel="noreferrer">Live ↗</a>`
-      : `<span class="row-live t-label muted">Link soon</span>`
-  return `<div class="index-row">
-    <a href="work.html?type=web&slug=${it.slug}"><span class="row-title">${it.title}</span></a>
-    <span class="row-meta t-label">${it.stack} · ${it.year}</span>
-    ${live}
-    ${it.cover ? `<span class="row-thumb frame"><img src="${it.cover}" alt="" loading="lazy" /></span>` : ''}
-  </div>`
+// home teaser: a pinned "cloud" stop-scroller — cards fly up from below with
+// staggered left/mid/right origins and settle into an offset shelf (echoes
+// the Motion-works cloud). Each card opens the project detail page; a
+// separate live-view link skips straight to the real site. Only shipped
+// work; new entries appear here automatically once added.
+export function renderWeb(items) {
+  $('.s-web .web-cloud').innerHTML = items
+    .filter((it) => it.status !== 'soon')
+    .map(
+      (it) => `
+      <div class="web-card" data-href="work.html?type=web&slug=${it.slug}" tabindex="0" role="link" aria-label="View ${it.title} project details">
+        <div class="web-card-media frame frame--natural">
+          <img src="${it.cover}" alt="${it.title}" loading="lazy" />
+        </div>
+        <div class="web-card-info">
+          <h3 class="web-card-title t-h3">${it.title}</h3>
+          <div class="web-card-meta t-label">
+            <span>${it.stack} · ${it.year}</span>
+            ${
+              it.url && it.url !== '#'
+                ? `<a class="web-card-live" href="${it.url}" target="_blank" rel="noreferrer">Live view ↗</a>`
+                : `<span class="muted">Link soon</span>`
+            }
+          </div>
+        </div>
+      </div>`
+    )
+    .join('')
+
+  $('.s-web .web-cloud').querySelectorAll('.web-card').forEach((card) => {
+    const go = () => (location.href = card.dataset.href)
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.web-card-live')) return
+      go()
+    })
+    card.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.web-card-live')) {
+        e.preventDefault()
+        go()
+      }
+    })
+  })
 }
 
-export function renderWeb(items) {
-  // only shipped work is listed — no "in production" rows; new entries appear
-  // here automatically once the backend has them
-  $('.s-web .index-list').innerHTML = items
-    .filter((it) => it.status !== 'soon')
-    .map(webRowHTML)
-    .join('')
-}
+// Pinned stop-scroll gallery (aircenter pattern) — every case study is a
+// full slide (image + glass panel), absolutely stacked; scroll crossfades
+// between them and fills each slide's progress bar. Scales to any number of
+// case studies with no layout change — mobile falls back to plain stacking.
+const progressSegs = (count) =>
+  Array.from({ length: count }, () => `<div class="seg"><div class="seg-fill"></div></div>`).join('')
 
 export function renderCases(items) {
-  $('.s-case .case-list').innerHTML = items
+  $('.s-case .case-slider-inner').innerHTML = items
     .map(
-      (cs) => `
-      <div class="case-entry">
-        <a class="case-media" href="case-study.html?slug=${cs.slug}">
-          <div class="frame"><img src="${cs.cover}" alt="${cs.title}" loading="lazy" /></div>
-        </a>
-        <div class="case-body">
-          <span class="t-label muted">${cs.role} · ${cs.year}</span>
-          <h3 class="t-h3" style="margin-block:12px 8px">${cs.title}</h3>
-          <p class="t-body muted">${cs.summary}</p>
-          <div class="case-stats">
-            ${cs.stats
-              .map(
-                (s) => `
-              <div class="stat">
-                <span class="t-stat" data-count="${s.value}">0</span><span class="t-stat">${s.suffix}</span>
-                <div class="rule rule--stroke stat-rule" data-ratio="${s.value}"></div>
-                <span class="t-label">${s.label}</span>
-              </div>`
-              )
-              .join('')}
+      (cs, i) => `
+      <div class="case-slide" data-index="${i}">
+        <div class="case-slide-media">
+          <img class="case-slide-img" src="${cs.cover}" alt="${cs.title}" loading="${i === 0 ? 'eager' : 'lazy'}" />
+        </div>
+        <div class="case-slider-panel glass">
+          <div class="case-progress">${progressSegs(items.length)}</div>
+          <p class="case-counter">
+            <span class="case-counter-current t-stat">${i + 1}</span>
+            <span class="case-counter-total muted">/ ${items.length}</span>
+          </p>
+          <div class="case-text">
+            <span class="t-label">${cs.role} · ${cs.year}</span>
+            <h3 class="t-h3">${cs.title}</h3>
+            <p class="t-body">${cs.summary}</p>
+            <a class="btn-line t-label" href="case-study.html?slug=${cs.slug}">
+              <span class="btn-rule"></span>Learn more
+            </a>
           </div>
-          <a class="btn-line t-label" href="case-study.html?slug=${cs.slug}" style="margin-top:24px">
-            <span class="btn-rule"></span>Read the story
-          </a>
         </div>
       </div>`
     )
@@ -119,15 +145,15 @@ export function renderCases(items) {
 }
 
 export function renderThink(think) {
-  $('.s-think .think-words').innerHTML = think.steps
-    .map((s, i) => `<span class="think-word" data-step="${i}"><span class="tw-inner">${s.title}</span></span>`)
-    .join('')
-  $('.s-think .think-stations').innerHTML = think.steps
+  $('.s-think .think-cards').innerHTML = think.steps
     .map(
       (s, i) => `
-      <div class="station" data-step="${i}">
-        <span class="t-label">${String(i + 1).padStart(2, '0')} · ${s.title}</span>
-        <p class="t-body">${s.description}</p>
+      <div class="think-card glass">
+        <div class="think-card-face">
+          <span class="think-card-number">${String(i + 1).padStart(2, '0')}</span>
+          <p class="think-card-desc">${s.description}</p>
+          <span class="think-card-title">${s.title}</span>
+        </div>
       </div>`
     )
     .join('')
@@ -141,29 +167,34 @@ export function renderAbout(aboutShort) {
 
 const GLYPHS = [
   // riding — two wheels and a line of road
-  `<svg class="glyph" viewBox="0 0 56 40"><circle cx="12" cy="28" r="8"/><circle cx="44" cy="28" r="8"/><path d="M12 28 L22 14 L38 14 L44 28 M22 14 L18 8 M30 14 L30 28"/></svg>`,
+  `<svg class="hobby-glyph" viewBox="0 0 56 40" fill="none"><circle cx="12" cy="28" r="8"/><circle cx="44" cy="28" r="8"/><path d="M12 28 L22 14 L38 14 L44 28 M22 14 L18 8 M30 14 L30 28"/></svg>`,
   // football — circle with seam lines
-  `<svg class="glyph" viewBox="0 0 56 40"><circle cx="28" cy="20" r="14"/><path d="M28 6 L28 14 M28 14 L17 22 M28 14 L39 22 M17 22 L21 34 M39 22 L35 34 M21 34 L35 34"/></svg>`,
+  `<svg class="hobby-glyph" viewBox="0 0 56 40" fill="none"><circle cx="28" cy="20" r="14"/><path d="M28 6 L28 14 M28 14 L17 22 M28 14 L39 22 M17 22 L21 34 M39 22 L35 34 M21 34 L35 34"/></svg>`,
   // drums — a drum and two sticks
-  `<svg class="glyph" viewBox="0 0 56 40"><path d="M14 20 h28 v12 a14 6 0 0 1 -28 0 z"/><path d="M14 20 a14 6 0 0 0 28 0 a14 6 0 0 0 -28 0"/><line x1="20" y1="16" x2="8" y2="4"/><line x1="36" y1="16" x2="48" y2="4"/></svg>`,
+  `<svg class="hobby-glyph" viewBox="0 0 56 40" fill="none"><path d="M14 20 h28 v12 a14 6 0 0 1 -28 0 z"/><path d="M14 20 a14 6 0 0 0 28 0 a14 6 0 0 0 -28 0"/><line x1="20" y1="16" x2="8" y2="4"/><line x1="36" y1="16" x2="48" y2="4"/></svg>`,
 ]
 
+// An accordion of photo panes: hover (or tap, on touch) opens one at a time,
+// its photo warming from muted to full colour and its description sliding in.
 export function renderHobbies(hobbies) {
   $('.s-hobbies .hobby-heading').textContent = hobbies.heading
-  $('.s-hobbies .hobby-grid').innerHTML = hobbies.items
+  $('.s-hobbies .hobby-panes').innerHTML = hobbies.items
     .map(
       (h, i) => `
-      <div class="hobby">
-        <div class="hobby-media frame"><img src="${h.image}" alt="${h.title}" loading="lazy" /></div>
-        <div class="hobby-head">${GLYPHS[i] || ''}<h3 class="t-h3">${h.title}</h3></div>
-        <p>${h.description}</p>
+      <div class="hobby-pane${i === 0 ? ' is-active' : ''}" data-index="${i}">
+        <div class="hobby-media"><img src="${h.image}" alt="${h.title}" loading="lazy" /></div>
+        <div class="hobby-scrim" aria-hidden="true"></div>
+        <div class="hobby-info">
+          ${GLYPHS[i] || ''}
+          <h3 class="hobby-title">${h.title}</h3>
+          <div class="hobby-desc-wrap"><p class="hobby-desc">${h.description}</p></div>
+        </div>
       </div>`
     )
     .join('')
 }
 
 export function renderFooter(footer) {
-  $('.s-footer .footer-heading').textContent = footer.heading
   const email = $('.s-footer .footer-email')
   email.href = `mailto:${footer.email}`
   $('.s-footer .footer-email .email-text').textContent = footer.email
@@ -171,6 +202,17 @@ export function renderFooter(footer) {
     .map((s) => `<a class="t-label" href="${s.url}" target="_blank" rel="noreferrer">${s.label}</a>`)
     .join('')
   $('.s-footer .rights-text').textContent = footer.rights
+
+  // Phase 1: no backend yet — compose a mailto with the visitor's note.
+  // Phase 2 swap: POST to api/contact.php instead, form markup unchanged.
+  const form = $('.s-footer .footer-form')
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const from = form.querySelector('.footer-form-email').value.trim()
+    const note = form.querySelector('.footer-form-message').value.trim()
+    const body = `${note}\n\n— ${from}`
+    location.href = `mailto:${footer.email}?subject=${encodeURIComponent('Inquiry from tusho.space')}&body=${encodeURIComponent(body)}`
+  })
 }
 
 /* ————————————————— choreography ————————————————— */
@@ -204,57 +246,97 @@ export function initSections() {
     })
   })
 
-  // motion works — the stop-scroller: section pins, the reel of work scrubs sideways
-  const cloud = $('.s-motion .cloud')
-  if (cloud && heavy && window.innerWidth >= 1080) {
-    const section = $('.s-motion')
-    const distance = () => {
-      const pad = parseFloat(getComputedStyle(section).paddingLeft) || 0
-      return Math.max(0, cloud.scrollWidth - (section.clientWidth - pad * 2))
-    }
-    gsap.to(cloud, {
-      x: () => -distance(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: () => '+=' + distance(),
-        pin: true,
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-      },
-    })
-  } else if (cloud) {
-    gsap.utils.toArray('.s-motion .work-card').forEach((card, i) => {
-      gsap.set(card, { y: 60, autoAlpha: 0 })
-      gsap.to(card, {
-        y: 0, autoAlpha: 1, duration: 0.9, ease: 'power3.out', delay: (i % 2) * 0.08,
-        scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+  // motion works — titled list; hovering a row blurs its siblings and a
+  // single shared preview (video if we have one, else the cover) follows
+  // the cursor to show the work itself
+  const motionRows = gsap.utils.toArray('.s-motion .motion-row')
+  if (motionRows.length) {
+    riseOnEnter(motionRows, { trigger: '.s-motion .motion-list', start: 'top 85%', stagger: 0.06 })
+
+    const preview = $('.s-motion .motion-preview')
+    if (preview && matchMedia('(pointer: fine)').matches && heavy) {
+      const video = preview.querySelector('video')
+      const img = preview.querySelector('img')
+      const moveX = gsap.quickTo(preview, 'x', { duration: 0.5, ease: 'power3.out' })
+      const moveY = gsap.quickTo(preview, 'y', { duration: 0.5, ease: 'power3.out' })
+
+      gsap.set(preview, { autoAlpha: 0, scale: 0.9 })
+      document.addEventListener('pointermove', (e) => {
+        moveX(e.clientX)
+        moveY(e.clientY)
       })
-    })
+
+      // the preview box adopts each item's real aspect ratio before it shows,
+      // so nothing gets cropped to a one-size-fits-all frame
+      const reveal = () => gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' })
+      let token = 0
+
+      motionRows.forEach((row) => {
+        row.addEventListener('pointerenter', () => {
+          motionRows.forEach((r) => r.classList.toggle('is-blurred', r !== row))
+          const myToken = ++token
+          const src = row.dataset.video
+          if (src) {
+            img.style.display = 'none'
+            video.style.display = ''
+            if (video.currentSrc !== src) video.src = src
+            video.play().catch(() => {})
+            const applyAndReveal = () => {
+              if (myToken !== token) return
+              preview.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`
+              reveal()
+            }
+            if (video.readyState >= 1) applyAndReveal()
+            else video.addEventListener('loadedmetadata', applyAndReveal, { once: true })
+          } else {
+            video.style.display = 'none'
+            img.style.display = ''
+            img.src = row.dataset.cover
+            const applyAndReveal = () => {
+              if (myToken !== token) return
+              preview.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`
+              reveal()
+            }
+            if (img.complete && img.naturalWidth) applyAndReveal()
+            else img.addEventListener('load', applyAndReveal, { once: true })
+          }
+        })
+        row.addEventListener('pointerleave', () => {
+          row.classList.remove('is-blurred')
+        })
+      })
+
+      $('.s-motion .motion-list').addEventListener('pointerleave', () => {
+        motionRows.forEach((r) => r.classList.remove('is-blurred'))
+        gsap.to(preview, { autoAlpha: 0, scale: 0.9, duration: 0.3, ease: 'power2.in' })
+        video.pause()
+      })
+    }
   }
 
-  // autoplay loops only while on screen
-  const io = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((en) => {
-        const v = en.target
-        if (en.isIntersecting) v.play().catch(() => {})
-        else v.pause()
-      }),
-    { rootMargin: '10% 0px' }
-  )
-  document.querySelectorAll('.s-motion video').forEach((v) => io.observe(v))
-
-  // brand entries — image wipes in from the notes' side, details rise beside it
+  // brand entries — the visual wipes in from the notes' side, details rise
+  // beside it; once settled, hovering washes the duotone into color from
+  // wherever the cursor sits
   document.querySelectorAll('.s-brand .brand-entry').forEach((entry, i) => {
-    const img = entry.querySelector('img')
+    const visual = entry.querySelector('.brand-visual')
     const side = i % 2 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)'
-    gsap.set(img, { clipPath: side })
-    gsap.to(img, {
+    gsap.set(visual, { clipPath: side })
+    gsap.to(visual, {
       clipPath: 'inset(0 0% 0 0%)', duration: 1, ease: 'power3.inOut',
       scrollTrigger: { trigger: entry, start: 'top 78%', once: true },
     })
+
+    if (matchMedia('(pointer: fine)').matches) {
+      const mono = visual.querySelector('.brand-visual-mono')
+      visual.addEventListener('pointerenter', () => mono.style.setProperty('--reveal-r', '260px'))
+      visual.addEventListener('pointermove', (e) => {
+        const r = visual.getBoundingClientRect()
+        mono.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`)
+        mono.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`)
+      })
+      visual.addEventListener('pointerleave', () => mono.style.setProperty('--reveal-r', '0px'))
+    }
+
     const notes = gsap.utils.toArray(entry.querySelectorAll('.brand-notes > *'))
     gsap.set(notes, { autoAlpha: 0, y: 24 })
     gsap.to(notes, {
@@ -263,83 +345,174 @@ export function initSections() {
     })
   })
 
-  // web index rows rise in sequence
-  const rows = gsap.utils.toArray('.s-web .index-row')
-  gsap.set(rows, { autoAlpha: 0, y: 32 })
-  ScrollTrigger.batch(rows, {
-    start: 'top 88%',
-    once: true,
-    onEnter: (batch) =>
-      gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.08 }),
-  })
+  // web projects — pinned "cloud" stop-scroller: cards fly up from below with
+  // staggered left/mid/right origins, converging on their resting shelf
+  // position as the section scrubs, then release.
+  const webCloud = $('.s-web .web-cloud')
+  const webCards = webCloud ? gsap.utils.toArray('.web-card', webCloud) : []
+  if (webCards.length) {
+    if (heavy && window.innerWidth >= 1080) {
+      const ORIGINS = [
+        { x: -40, rot: -3 },
+        { x: 20, rot: 2 },
+        { x: -20, rot: -2 },
+        { x: 40, rot: 3 },
+      ]
+      gsap.set(webCards, {
+        y: (i) => (i % 2 ? '70vh' : '55vh'),
+        x: (i) => ORIGINS[i % ORIGINS.length].x,
+        rotate: (i) => ORIGINS[i % ORIGINS.length].rot,
+        autoAlpha: 0,
+      })
 
-  // case studies — stats count up, rules extend proportional to value
-  document.querySelectorAll('.s-case .case-entry').forEach((entry) => {
-    const nums = entry.querySelectorAll('[data-count]')
-    const rules = entry.querySelectorAll('.stat-rule')
-    const maxVal = Math.max(...[...rules].map((r) => +r.dataset.ratio))
-    rules.forEach((r) => gsap.set(r, { scaleX: 0 }))
-    ScrollTrigger.create({
-      trigger: entry,
-      start: 'top 75%',
-      once: true,
-      onEnter: () => {
-        nums.forEach((n) => {
-          const target = +n.dataset.count
-          gsap.fromTo(
-            n,
-            { innerText: 0 },
-            { innerText: target, duration: 0.9, ease: 'power1.out', snap: { innerText: 1 } }
-          )
-        })
-        rules.forEach((r) =>
-          gsap.to(r, {
-            scaleX: +r.dataset.ratio / maxVal,
-            duration: 0.9,
-            ease: 'power2.inOut',
-          })
-        )
-      },
-    })
-    riseOnEnter([entry.querySelector('.case-body')], { trigger: entry, start: 'top 80%' })
-    const img = entry.querySelector('.case-media img')
-    gsap.set(img, { clipPath: 'inset(0 0 100% 0)' })
-    gsap.to(img, {
-      clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.inOut',
-      scrollTrigger: { trigger: entry, start: 'top 80%', once: true },
-    })
-  })
-
-  // how i think — the four moves reveal as the section scrolls through, the track
-  // drawing beneath them. Scrub-based, NOT pinned: state follows scroll position at
-  // all times, so it can never freeze on top of a neighbouring section.
-  const think = $('.s-think')
-  if (think) {
-    const wordEls = gsap.utils.toArray('.think-word', think)
-    const fill = $('.track-fill', think)
-    const stations = gsap.utils.toArray('.station', think)
-
-    const show = (idx) => {
-      wordEls.forEach((w, i) => gsap.set(w, { autoAlpha: i === idx ? 1 : 0 }))
-      stations.forEach((s, i) => s.classList.toggle('active', i <= idx))
-    }
-
-    if (!motionOK) {
-      gsap.set(fill, { scaleX: 1 })
-      show(wordEls.length - 1)
-    } else {
-      gsap.set(fill, { scaleX: 0 })
-      show(0)
+      const n = webCards.length
+      const pinDistance = window.innerHeight * 1.15
+      const bg = $('.gradient-bg')
       ScrollTrigger.create({
-        trigger: think,
-        start: 'top 80%',
-        end: 'bottom 55%',
-        scrub: 0.6,
+        trigger: '.s-web',
+        start: 'top top',
+        end: () => '+=' + pinDistance,
+        pin: true,
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        onLeave: () => bg && gsap.set(bg, { y: 0 }),
+        onLeaveBack: () => bg && gsap.set(bg, { y: 0 }),
         onUpdate(self) {
-          const p = self.progress
-          gsap.set(fill, { scaleX: p })
-          show(Math.min(wordEls.length - 1, Math.floor(p * wordEls.length)))
+          webCards.forEach((card, i) => {
+            // staggered, overlapping windows so cards arrive one after another
+            const windowStart = (i / n) * 0.7
+            const windowEnd = windowStart + 0.45
+            const p = gsap.utils.clamp(0, 1, (self.progress - windowStart) / (windowEnd - windowStart))
+            const eased = gsap.parseEase('power3.out')(p)
+            gsap.set(card, {
+              y: (i % 2 ? 70 : 55) * (1 - eased) + 'vh',
+              x: ORIGINS[i % ORIGINS.length].x * (1 - eased),
+              rotate: ORIGINS[i % ORIGINS.length].rot * (1 - eased),
+              autoAlpha: eased,
+            })
+          })
+          // the background drifts at ~10% of the section's own scroll speed —
+          // never fully stopped, even while the cards are pinned in place
+          if (bg) gsap.set(bg, { y: self.progress * pinDistance * 0.1 })
         },
+      })
+    } else {
+      webCards.forEach((card, i) => {
+        gsap.set(card, { y: 40, autoAlpha: 0 })
+        gsap.to(card, {
+          y: 0, autoAlpha: 1, duration: 0.8, ease: 'power3.out', delay: (i % 2) * 0.08,
+          scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+        })
+      })
+    }
+  }
+
+  // case studies — pinned stop-scroll gallery. Desktop: pin the wrapper for
+  // N*90vh of scroll, crossfade between slides, fill each slide's progress
+  // bar. Mobile/reduced-motion: plain stacked reveal, no pin.
+  const caseSlider = $('.s-case .case-slider-inner')
+  const caseSlides = caseSlider ? gsap.utils.toArray('.case-slide', caseSlider) : []
+  if (caseSlides.length) {
+    if (heavy) {
+      const n = caseSlides.length
+      const segFills = caseSlides.map((s) => gsap.utils.toArray('.seg-fill', s))
+
+      const CROSSFADE = 0.35 // fraction of one slide's dwell spent blending into the next
+      ScrollTrigger.create({
+        trigger: '.s-case .case-slider',
+        start: 'center center',
+        end: () => '+=' + n * window.innerHeight * 0.9,
+        pin: true,
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        onUpdate(self) {
+          const raw = self.progress * n
+          const active = Math.min(n - 1, Math.floor(raw))
+          const withinItem = raw - active
+          const fadeT = gsap.utils.clamp(0, 1, (withinItem - (1 - CROSSFADE)) / CROSSFADE)
+
+          caseSlides.forEach((slide, i) => {
+            let alpha = 0
+            if (i === active) alpha = 1 - fadeT
+            else if (i === active + 1) alpha = fadeT
+            gsap.set(slide, { autoAlpha: alpha, filter: `blur(${(1 - alpha) * 14}px)` })
+          })
+
+          // every slide's progress bar reflects the same overall position
+          segFills.forEach((fills) => {
+            fills.forEach((fill, i) => {
+              const ratio = i < active ? 1 : i === active ? withinItem : 0
+              gsap.set(fill, { scaleX: ratio })
+            })
+          })
+        },
+      })
+    } else {
+      caseSlides.forEach((slide) => {
+        const img = slide.querySelector('.case-slide-img')
+        gsap.set(img, { clipPath: 'inset(0 0 100% 0)' })
+        gsap.to(img, {
+          clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.inOut',
+          scrollTrigger: { trigger: slide, start: 'top 80%', once: true },
+        })
+        riseOnEnter([slide.querySelector('.case-text')], { trigger: slide, start: 'top 80%' })
+        // one slide's progress bar is enough on mobile; fill it fully as it enters
+        gsap.set(gsap.utils.toArray('.seg-fill', slide), { scaleX: 1 })
+      })
+    }
+  }
+
+  // how i think — the four glass cards rise in with a stagger as the section enters
+  const thinkCards = gsap.utils.toArray('.s-think .think-card')
+  if (thinkCards.length) {
+    gsap.set(thinkCards, { autoAlpha: 0, y: 32 })
+    ScrollTrigger.create({
+      trigger: '.s-think',
+      start: 'top 78%',
+      once: true,
+      onEnter: () =>
+        gsap.to(thinkCards, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1 }),
+    })
+
+    // whole-card 3D tilt (GSAP owns rotationX/rotationY on the same element
+    // as the entrance y-tween — it composes them into one matrix, no fight)
+    // plus a "venom" hover effect: three blurred blobs trailing the cursor
+    // at different speeds for a lava-tendril feel, blended by difference so
+    // the color always reads as the inverse of the card — no new hue needed
+    // — topped with a tight, near-lagless shine hotspot.
+    if (matchMedia('(pointer: fine)').matches) {
+      thinkCards.forEach((card) => {
+        const face = card.querySelector('.think-card-face')
+        const rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3.out' })
+        const ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3.out' })
+        const b1x = gsap.quickTo(face, '--b1x', { duration: 0.5, ease: 'power2.out' })
+        const b1y = gsap.quickTo(face, '--b1y', { duration: 0.5, ease: 'power2.out' })
+        const b2x = gsap.quickTo(face, '--b2x', { duration: 0.85, ease: 'power2.out' })
+        const b2y = gsap.quickTo(face, '--b2y', { duration: 0.85, ease: 'power2.out' })
+        const b3x = gsap.quickTo(face, '--b3x', { duration: 1.2, ease: 'power2.out' })
+        const b3y = gsap.quickTo(face, '--b3y', { duration: 1.2, ease: 'power2.out' })
+        const sx = gsap.quickTo(face, '--sx', { duration: 0.12, ease: 'power2.out' })
+        const sy = gsap.quickTo(face, '--sy', { duration: 0.12, ease: 'power2.out' })
+
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect()
+          const px = e.clientX - r.left
+          const py = e.clientY - r.top
+          const nx = px / r.width - 0.5
+          const ny = py / r.height - 0.5
+          rx(ny * -22)
+          ry(nx * 22)
+          b1x(px + 'px'); b1y(py + 'px')
+          b2x(px + 'px'); b2y(py + 'px')
+          b3x(px + 'px'); b3y(py + 'px')
+          sx(px + 'px'); sy(py + 'px')
+          face.style.setProperty('--glow-o', '1')
+        })
+        card.addEventListener('pointerleave', () => {
+          rx(0)
+          ry(0)
+          face.style.setProperty('--glow-o', '0')
+        })
       })
     }
   }
@@ -359,36 +532,66 @@ export function initSections() {
     })
   }
 
-  // hobbies — photos wipe up, pictograms draw beside the titles
-  document.querySelectorAll('.s-hobbies .hobby').forEach((hobby, i) => {
-    const img = hobby.querySelector('.hobby-media img')
-    if (img) {
-      gsap.set(img, { clipPath: 'inset(100% 0 0 0)' })
-      gsap.to(img, {
-        clipPath: 'inset(0% 0 0 0)', duration: 0.9, ease: 'power3.inOut', delay: i * 0.12,
+  // hobbies — panes rise in on scroll, then hover (or tap) opens one at a time
+  const hobbyPanes = gsap.utils.toArray('.s-hobbies .hobby-pane')
+  if (hobbyPanes.length) {
+    gsap.set(hobbyPanes, { autoAlpha: 0, y: 30 })
+    ScrollTrigger.create({
+      trigger: '.s-hobbies',
+      start: 'top 78%',
+      once: true,
+      onEnter: () =>
+        gsap.to(hobbyPanes, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1 }),
+    })
+
+    hobbyPanes.forEach((pane) => {
+      const strokes = pane.querySelectorAll('.hobby-glyph path, .hobby-glyph circle, .hobby-glyph line')
+      strokes.forEach((s) => {
+        const len = s.getTotalLength ? s.getTotalLength() : 100
+        s.style.strokeDasharray = len
+        s.style.strokeDashoffset = len
+      })
+      gsap.to(strokes, {
+        strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut', stagger: 0.08,
         scrollTrigger: { trigger: '.s-hobbies', start: 'top 78%', once: true },
       })
-    }
-    const strokes = hobby.querySelectorAll('.glyph path, .glyph circle, .glyph line')
-    strokes.forEach((s) => {
-      const len = s.getTotalLength ? s.getTotalLength() : 100
-      s.style.strokeDasharray = len
-      s.style.strokeDashoffset = len
     })
-    gsap.to(strokes, {
-      strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut', stagger: 0.1, delay: 0.3 + i * 0.12,
-      scrollTrigger: { trigger: '.s-hobbies', start: 'top 78%', once: true },
-    })
-  })
 
-  // footer — the closing statement rises, the email underline draws
-  const footHeading = $('.s-footer .footer-heading')
-  if (footHeading) {
-    const split = SplitText.create(footHeading, { type: 'lines', mask: 'lines' })
-    riseOnEnter(split.lines, { trigger: '.s-footer', start: 'top 75%' })
+    // fine-pointer devices get hover; touch devices get tap-to-open
+    if (matchMedia('(pointer: fine)').matches) {
+      hobbyPanes.forEach((pane) => {
+        pane.addEventListener('pointerenter', () => {
+          hobbyPanes.forEach((p) => p.classList.toggle('is-active', p === pane))
+        })
+      })
+    } else {
+      hobbyPanes.forEach((pane) => {
+        pane.addEventListener('click', () => {
+          hobbyPanes.forEach((p) => p.classList.toggle('is-active', p === pane))
+        })
+      })
+    }
   }
+
+  // footer — email + socials rise in, the underline draws, form fades up beside it
+  riseOnEnter(gsap.utils.toArray('.s-footer .footer-contact > *'), {
+    trigger: '.s-footer',
+    start: 'top 80%',
+    stagger: 0.1,
+  })
   const emailRule = $('.s-footer .email-rule')
   if (emailRule) drawRuleOnEnter(emailRule, { trigger: '.s-footer .footer-email', start: 'top 90%' })
+  const footerForm = $('.s-footer .footer-form')
+  if (footerForm) {
+    gsap.set(footerForm, { autoAlpha: 0, y: 24 })
+    ScrollTrigger.create({
+      trigger: '.s-footer',
+      start: 'top 75%',
+      once: true,
+      onEnter: () =>
+        gsap.to(footerForm, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out' }),
+    })
+  }
 
   // pins (esp. the horizontal motion scroller) measure distances up front — but
   // videos and webfonts land late and shift layout. Recompute after they settle.

@@ -1,3 +1,10 @@
+/* home page: header starts invisible — the hero's big logo takes its place
+   until the intro scroll morphs it into this slot. CSS default (not just JS)
+   so there's no flash of the header on a skipped-preloader repeat visit. */
+body[data-page='home'] .site-header {
+  opacity: 0;
+}
+
 /* ————— site chrome — wordmark centered, nav split to the edges ————— */
 .site-header {
   position: fixed;
@@ -68,14 +75,11 @@
   overflow: visible;
 }
 
-/* day/night lives inside the O of the logo — click it to flip the world */
+/* day/night lives inside the O of the logo — click it to flip the world.
+   The dot only appears on hover (a clickable hint), never at rest. */
 .brand-mark .o-fill {
   r: 0;
   transition: r var(--dur-hover) var(--ease-expo);
-}
-
-html[data-theme='light'] .brand-mark .o-fill {
-  r: 17px;
 }
 
 .o-toggle {
@@ -90,11 +94,27 @@ html[data-theme='light'] .brand-mark .o-fill {
 
 .o-toggle:hover ~ svg .o-fill,
 .brand-mark:has(.o-toggle:hover) .o-fill {
-  r: 6px;
+  r: 5px;
 }
 
-html[data-theme='light'] .brand-mark:has(.o-toggle:hover) .o-fill {
-  r: 12px;
+/* one-time hint bubble pointing at the clickable O — blinks in, then gone */
+.brand-mark .o-hint {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: inherit;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 6;
 }
 
 /* scroll progress — the spine's drawn length, replacing the scrollbar at the right edge */
@@ -125,7 +145,7 @@ html[data-theme='light'] .brand-mark:has(.o-toggle:hover) .o-fill {
   width: 40px;
   height: 1px;
   background: var(--stroke);
-  transform-origin: left center;
+  transform-origin: right center;
   transition: transform var(--dur-hover) var(--ease-expo);
 }
 
@@ -228,34 +248,6 @@ html[data-theme='light'] .brand-mark:has(.o-toggle:hover) .o-fill {
   transform-origin: top center;
   z-index: 90;
   pointer-events: none;
-}
-
-/* ————— preloader ————— */
-.preloader {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: var(--ink);
-  color: var(--paper);
-  display: grid;
-  place-items: center;
-}
-
-html[data-theme='light'] .preloader {
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.preloader .pre-mark {
-  width: clamp(72px, 10vw, 132px);
-  will-change: transform;
-}
-
-.preloader .pre-mark svg {
-  width: 100%;
-  height: auto;
-  fill: currentColor;
-  overflow: visible;
 }
 
 /* ————— feedback mode (press F) — owner authoring aid ————— */
@@ -426,12 +418,23 @@ body.fb-on {
   border-color: var(--line);
 }
 
-/* ————— THE OBJECT — 3D sculpture layer behind the content ————— */
+/* ————— THE OBJECT — 3D sculpture layer behind the content (currently unused) ————— */
 .object-canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+/* ————— THE FIELD — seamless ambient gradient behind the whole scrollable page ————— */
+.gradient-bg {
+  position: fixed;
+  /* slight overscan bleed so it can be nudged a few % during a pinned
+     section (see the web-cloud parallax) without exposing an edge */
+  inset: -15%;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
 main {
