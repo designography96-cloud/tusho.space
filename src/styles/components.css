@@ -13,7 +13,7 @@ body[data-page='home'] .site-header {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 20px var(--margin);
+  padding: 15px var(--margin);
   mix-blend-mode: difference;
   color: var(--paper);
 }
@@ -63,7 +63,7 @@ body[data-page='home'] .site-header {
 
 .brand-mark {
   display: block;
-  width: clamp(84px, 9vw, 116px);
+  width: clamp(63px, 6.75vw, 87px);
   position: relative;
   justify-self: center;
 }
@@ -429,9 +429,7 @@ body.fb-on {
 /* ————— THE FIELD — seamless ambient gradient behind the whole scrollable page ————— */
 .gradient-bg {
   position: fixed;
-  /* slight overscan bleed so it can be nudged a few % during a pinned
-     section (see the web-cloud parallax) without exposing an edge */
-  inset: -15%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
   user-select: none;

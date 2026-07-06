@@ -271,6 +271,19 @@ export function initSections() {
       const reveal = () => gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' })
       let token = 0
 
+      // pointerleave alone isn't enough to hide this: scrolling with a
+      // stationary mouse moves the section out from under the cursor
+      // without firing any pointer event, leaving the preview stuck fixed
+      // on screen and dragged into whatever section comes next. Force it
+      // shut the moment the section itself leaves the viewport.
+      const forceHide = () => {
+        token++
+        motionRows.forEach((r) => r.classList.remove('is-blurred'))
+        gsap.set(preview, { autoAlpha: 0, scale: 0.9 })
+        video.pause()
+      }
+      ScrollTrigger.create({ trigger: '.s-motion', start: 'top bottom', end: 'bottom top', onLeave: forceHide, onLeaveBack: forceHide })
+
       motionRows.forEach((row) => {
         row.addEventListener('pointerenter', () => {
           motionRows.forEach((r) => r.classList.toggle('is-blurred', r !== row))
@@ -314,16 +327,23 @@ export function initSections() {
     }
   }
 
-  // brand entries — the visual wipes in from the notes' side, details rise
-  // beside it; once settled, hovering washes the duotone into color from
-  // wherever the cursor sits
+  // brand entries — the visual drifts in like a cloud, from a different
+  // side/bottom angle each time rather than the same wipe every time;
+  // details rise beside it; once settled, hovering washes the duotone into
+  // color from wherever the cursor sits
+  const CLOUD_ORIGINS = [
+    { x: -70, y: 50, rot: -4 },
+    { x: 80, y: 65, rot: 3 },
+    { x: -50, y: 75, rot: 3 },
+    { x: 60, y: 40, rot: -3 },
+  ]
   document.querySelectorAll('.s-brand .brand-entry').forEach((entry, i) => {
     const visual = entry.querySelector('.brand-visual')
-    const side = i % 2 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)'
-    gsap.set(visual, { clipPath: side })
+    const origin = CLOUD_ORIGINS[i % CLOUD_ORIGINS.length]
+    gsap.set(visual, { x: origin.x, y: origin.y, rotate: origin.rot, scale: 0.94, autoAlpha: 0 })
     gsap.to(visual, {
-      clipPath: 'inset(0 0% 0 0%)', duration: 1, ease: 'power3.inOut',
-      scrollTrigger: { trigger: entry, start: 'top 78%', once: true },
+      x: 0, y: 0, rotate: 0, scale: 1, autoAlpha: 1, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: entry, start: 'top 80%', once: true },
     })
 
     if (matchMedia('(pointer: fine)').matches) {
@@ -345,66 +365,36 @@ export function initSections() {
     })
   })
 
-  // web projects — pinned "cloud" stop-scroller: cards fly up from below with
-  // staggered left/mid/right origins, converging on their resting shelf
-  // position as the section scrubs, then release.
+  // web projects — an asymmetric bento, not pinned: each card flies up from
+  // below once as it enters, then drifts at its own parallax speed as the
+  // page keeps scrolling past — never a full stop.
   const webCloud = $('.s-web .web-cloud')
   const webCards = webCloud ? gsap.utils.toArray('.web-card', webCloud) : []
   if (webCards.length) {
-    if (heavy && window.innerWidth >= 1080) {
-      const ORIGINS = [
-        { x: -40, rot: -3 },
-        { x: 20, rot: 2 },
-        { x: -20, rot: -2 },
-        { x: 40, rot: 3 },
-      ]
-      gsap.set(webCards, {
-        y: (i) => (i % 2 ? '70vh' : '55vh'),
-        x: (i) => ORIGINS[i % ORIGINS.length].x,
-        rotate: (i) => ORIGINS[i % ORIGINS.length].rot,
-        autoAlpha: 0,
+    const ORIGINS = [
+      { x: -40, rot: -3 },
+      { x: 30, rot: 2 },
+      { x: -25, rot: -2 },
+      { x: 45, rot: 3 },
+    ]
+    const PARALLAX_SPEED = [0.65, 1, 0.8, 1.15] // uneven, so they never move in lockstep
+
+    webCards.forEach((card, i) => {
+      const origin = ORIGINS[i % ORIGINS.length]
+      gsap.set(card, { y: 70, x: origin.x, rotate: origin.rot, autoAlpha: 0 })
+      gsap.to(card, {
+        y: 0, x: 0, rotate: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', delay: (i % 3) * 0.1,
+        scrollTrigger: { trigger: card, start: 'top 88%', once: true },
       })
 
-      const n = webCards.length
-      const pinDistance = window.innerHeight * 1.15
-      const bg = $('.gradient-bg')
-      ScrollTrigger.create({
-        trigger: '.s-web',
-        start: 'top top',
-        end: () => '+=' + pinDistance,
-        pin: true,
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-        onLeave: () => bg && gsap.set(bg, { y: 0 }),
-        onLeaveBack: () => bg && gsap.set(bg, { y: 0 }),
-        onUpdate(self) {
-          webCards.forEach((card, i) => {
-            // staggered, overlapping windows so cards arrive one after another
-            const windowStart = (i / n) * 0.7
-            const windowEnd = windowStart + 0.45
-            const p = gsap.utils.clamp(0, 1, (self.progress - windowStart) / (windowEnd - windowStart))
-            const eased = gsap.parseEase('power3.out')(p)
-            gsap.set(card, {
-              y: (i % 2 ? 70 : 55) * (1 - eased) + 'vh',
-              x: ORIGINS[i % ORIGINS.length].x * (1 - eased),
-              rotate: ORIGINS[i % ORIGINS.length].rot * (1 - eased),
-              autoAlpha: eased,
-            })
-          })
-          // the background drifts at ~10% of the section's own scroll speed —
-          // never fully stopped, even while the cards are pinned in place
-          if (bg) gsap.set(bg, { y: self.progress * pinDistance * 0.1 })
-        },
-      })
-    } else {
-      webCards.forEach((card, i) => {
-        gsap.set(card, { y: 40, autoAlpha: 0 })
+      if (heavy && window.innerWidth >= 1080) {
         gsap.to(card, {
-          y: 0, autoAlpha: 1, duration: 0.8, ease: 'power3.out', delay: (i % 2) * 0.08,
-          scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+          yPercent: -18 * PARALLAX_SPEED[i % PARALLAX_SPEED.length],
+          ease: 'none',
+          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
         })
-      })
-    }
+      }
+    })
   }
 
   // case studies — pinned stop-scroll gallery. Desktop: pin the wrapper for
@@ -418,9 +408,13 @@ export function initSections() {
       const segFills = caseSlides.map((s) => gsap.utils.toArray('.seg-fill', s))
 
       const CROSSFADE = 0.35 // fraction of one slide's dwell spent blending into the next
+      // "center center" would center against the FULL viewport, but the fixed
+      // header covers the top of it — the real visual middle is the center
+      // of the space below the header, which is half a header-height lower
+      const headerH = () => document.querySelector('.site-header')?.offsetHeight || 0
       ScrollTrigger.create({
         trigger: '.s-case .case-slider',
-        start: 'center center',
+        start: () => `center center+=${headerH() / 2}`,
         end: () => '+=' + n * window.innerHeight * 0.9,
         pin: true,
         scrub: 0.5,
