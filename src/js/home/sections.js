@@ -71,42 +71,41 @@ export function renderBrand(items) {
 // separate live-view link skips straight to the real site. Only shipped
 // work; new entries appear here automatically once added.
 export function renderWeb(items) {
-  $('.s-web .web-cloud').innerHTML = items
+  $('.s-web .web-arc').innerHTML = items
     .filter((it) => it.status !== 'soon')
     .map(
       (it) => `
       <div class="web-card" data-href="work.html?type=web&slug=${it.slug}" tabindex="0" role="link" aria-label="View ${it.title} project details">
-        <div class="web-card-media frame frame--natural">
+        <div class="web-card-media">
           <img src="${it.cover}" alt="${it.title}" loading="lazy" />
         </div>
-        <div class="web-card-info">
-          <h3 class="web-card-title t-h3">${it.title}</h3>
-          <div class="web-card-meta t-label">
-            <span>${it.stack} · ${it.year}</span>
-            ${
-              it.url && it.url !== '#'
-                ? `<a class="web-card-live" href="${it.url}" target="_blank" rel="noreferrer">Live view ↗</a>`
-                : `<span class="muted">Link soon</span>`
-            }
-          </div>
+        <div class="web-card-info t-label">
+          <span class="web-card-title">${it.title}</span>
+          ${
+            it.url && it.url !== '#'
+              ? `<a class="web-card-live" href="${it.url}" target="_blank" rel="noreferrer">Live ↗</a>`
+              : `<span class="muted">Soon</span>`
+          }
         </div>
       </div>`
     )
     .join('')
 
-  $('.s-web .web-cloud').querySelectorAll('.web-card').forEach((card) => {
-    const go = () => (location.href = card.dataset.href)
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.web-card-live')) return
-      go()
-    })
-    card.addEventListener('keydown', (e) => {
-      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.web-card-live')) {
-        e.preventDefault()
+  $('.s-web .web-arc')
+    .querySelectorAll('.web-card')
+    .forEach((card) => {
+      const go = () => (location.href = card.dataset.href)
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.web-card-live')) return
         go()
-      }
+      })
+      card.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.web-card-live')) {
+          e.preventDefault()
+          go()
+        }
+      })
     })
-  })
 }
 
 // Pinned stop-scroll gallery (aircenter pattern) — every case study is a
@@ -261,28 +260,67 @@ export function initSections() {
       const moveY = gsap.quickTo(preview, 'y', { duration: 0.5, ease: 'power3.out' })
 
       gsap.set(preview, { autoAlpha: 0, scale: 0.9 })
+      let lastX = -1
+      let lastY = -1
       document.addEventListener('pointermove', (e) => {
-        moveX(e.clientX)
-        moveY(e.clientY)
+        lastX = e.clientX
+        lastY = e.clientY
+        moveX(lastX)
+        moveY(lastY)
       })
 
       // the preview box adopts each item's real aspect ratio before it shows,
       // so nothing gets cropped to a one-size-fits-all frame
-      const reveal = () => gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' })
+      let shown = false
+      const reveal = () => {
+        shown = true
+        gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' })
+        startPoll()
+      }
       let token = 0
 
-      // pointerleave alone isn't enough to hide this: scrolling with a
-      // stationary mouse moves the section out from under the cursor
-      // without firing any pointer event, leaving the preview stuck fixed
-      // on screen and dragged into whatever section comes next. Force it
-      // shut the moment the section itself leaves the viewport.
       const forceHide = () => {
+        if (!shown) return
+        shown = false
         token++
         motionRows.forEach((r) => r.classList.remove('is-blurred'))
         gsap.set(preview, { autoAlpha: 0, scale: 0.9 })
         video.pause()
       }
-      ScrollTrigger.create({ trigger: '.s-motion', start: 'top bottom', end: 'bottom top', onLeave: forceHide, onLeaveBack: forceHide })
+
+      // pointerleave alone isn't enough: scrolling with a stationary mouse
+      // moves the section out from under the cursor without firing any
+      // pointer event — and confirmed live, Chrome actually keeps
+      // re-hit-testing during scroll and fires pointerenter on whatever row
+      // passes under the still cursor, which kept re-arming the preview the
+      // whole way up. A scroll-event-based check still isn't enough on its
+      // own: once scrolling actually stops (hits the top, momentum decays to
+      // zero), no more 'scroll' events fire at all — so if the very last
+      // thing that happened was one of those scroll-induced pointerenters,
+      // there's nothing left to trigger a cleanup check, and it's stuck
+      // forever. Poll on every animation frame instead, for as long as the
+      // preview is shown — this doesn't depend on any particular event
+      // firing, just continuously checks whether the last known cursor
+      // position still falls inside the section's current rect.
+      const motionSection = $('.s-motion')
+      let pollId = null
+      const poll = () => {
+        if (!shown) {
+          pollId = null
+          return
+        }
+        const r = motionSection.getBoundingClientRect()
+        const inside = lastX >= r.left && lastX <= r.right && lastY >= r.top && lastY <= r.bottom
+        if (!inside) {
+          forceHide()
+          pollId = null
+          return
+        }
+        pollId = requestAnimationFrame(poll)
+      }
+      const startPoll = () => {
+        if (pollId == null) pollId = requestAnimationFrame(poll)
+      }
 
       motionRows.forEach((row) => {
         row.addEventListener('pointerenter', () => {
@@ -320,6 +358,8 @@ export function initSections() {
       })
 
       $('.s-motion .motion-list').addEventListener('pointerleave', () => {
+        shown = false
+        token++
         motionRows.forEach((r) => r.classList.remove('is-blurred'))
         gsap.to(preview, { autoAlpha: 0, scale: 0.9, duration: 0.3, ease: 'power2.in' })
         video.pause()
@@ -365,36 +405,97 @@ export function initSections() {
     })
   })
 
-  // web projects — an asymmetric bento, not pinned: each card flies up from
-  // below once as it enters, then drifts at its own parallax speed as the
-  // page keeps scrolling past — never a full stop.
-  const webCloud = $('.s-web .web-cloud')
-  const webCards = webCloud ? gsap.utils.toArray('.web-card', webCloud) : []
+  // web projects — Trionn's arc conveyor: the cards fly in from the left along
+  // a curved path that wraps up and around the centred title, then peel off
+  // and settle into a scattered grid (the section pins while this plays). The
+  // images keep a gentle water-like float once landed. Cards stay clickable
+  // the whole time. Mobile / reduced-motion: a plain stacked fade-in.
+  const webStage = $('.s-web .web-stage')
+  const webArc = $('.s-web .web-arc')
+  const webCards = webArc ? gsap.utils.toArray('.web-card', webArc) : []
   if (webCards.length) {
-    const ORIGINS = [
-      { x: -40, rot: -3 },
-      { x: 30, rot: 2 },
-      { x: -25, rot: -2 },
-      { x: 45, rot: 3 },
-    ]
-    const PARALLAX_SPEED = [0.65, 1, 0.8, 1.15] // uneven, so they never move in lockstep
+    if (heavy && window.innerWidth >= 1080) {
+      webArc.classList.add('is-arc') // absolute-positions the cards for the path
 
-    webCards.forEach((card, i) => {
-      const origin = ORIGINS[i % ORIGINS.length]
-      gsap.set(card, { y: 70, x: origin.x, rotate: origin.rot, autoAlpha: 0 })
-      gsap.to(card, {
-        y: 0, x: 0, rotate: 0, autoAlpha: 1, duration: 1, ease: 'power3.out', delay: (i % 3) * 0.1,
-        scrollTrigger: { trigger: card, start: 'top 88%', once: true },
-      })
+      const build = () => {
+        const vw = window.innerWidth
+        const vh = window.innerHeight
+        // scattered resting grid (screenshot 2), offsets from stage centre
+        const slots = [
+          { x: -0.30 * vw, y: -0.15 * vh },
+          { x: 0.30 * vw, y: -0.19 * vh },
+          { x: -0.33 * vw, y: 0.17 * vh },
+          { x: 0.28 * vw, y: 0.15 * vh },
+        ]
+        // the flight path: just off-screen lower-left → peak up over the title
+        const start = { x: -0.72 * vw, y: 0.34 * vh }
+        const peak = { x: -0.04 * vw, y: -0.42 * vh }
+        return { slots, start, peak }
+      }
 
-      if (heavy && window.innerWidth >= 1080) {
-        gsap.to(card, {
-          yPercent: -18 * PARALLAX_SPEED[i % PARALLAX_SPEED.length],
-          ease: 'none',
-          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+      let geo = build()
+      const startRot = [-16, -12, -18, -14]
+
+      const place = () => {
+        webCards.forEach((c, i) => {
+          gsap.set(c, {
+            xPercent: -50,
+            yPercent: -50,
+            x: geo.start.x,
+            y: geo.start.y,
+            rotation: startRot[i % 4],
+            autoAlpha: 0,
+          })
         })
       }
-    })
+      place()
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: webStage,
+          start: 'top top',
+          end: '+=200%',
+          pin: true,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          onRefresh: () => {
+            geo = build()
+            place()
+          },
+        },
+      })
+
+      webCards.forEach((c, i) => {
+        const at = i * 0.16 // each card follows the one before it along the arc
+        const slot = geo.slots[i % geo.slots.length]
+        tl.to(c, { autoAlpha: 1, duration: 0.1, ease: 'none' }, at)
+        tl.to(
+          c,
+          {
+            motionPath: { path: [geo.start, geo.peak, slot], curviness: 1.4 },
+            ease: 'none',
+            duration: 1,
+          },
+          at
+        )
+        // tilt along the flight, then settle upright as it reaches its slot
+        tl.to(c, { rotation: 0, duration: 1, ease: 'power2.out' }, at)
+      })
+    } else {
+      // fallback: simple stacked fade-in grid
+      webArc.classList.add('is-stack')
+      webCards.forEach((card, i) => {
+        gsap.set(card, { y: 50, autoAlpha: 0 })
+        gsap.to(card, {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: (i % 2) * 0.08,
+          scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+        })
+      })
+    }
   }
 
   // case studies — pinned stop-scroll gallery. Desktop: pin the wrapper for
@@ -468,44 +569,31 @@ export function initSections() {
         gsap.to(thinkCards, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1 }),
     })
 
-    // whole-card 3D tilt (GSAP owns rotationX/rotationY on the same element
-    // as the entrance y-tween — it composes them into one matrix, no fight)
-    // plus a "venom" hover effect: three blurred blobs trailing the cursor
-    // at different speeds for a lava-tendril feel, blended by difference so
-    // the color always reads as the inverse of the card — no new hue needed
-    // — topped with a tight, near-lagless shine hotspot.
+    // whole-card 3D tilt + a light float, both driven by the mouse — GSAP
+    // owns rotationX/rotationY/x/y on the same element as the entrance
+    // y-tween, composing them into one matrix, so nothing fights.
+    // (the venom/glow hover effect has been pulled for now — revisit later.)
     if (matchMedia('(pointer: fine)').matches) {
       thinkCards.forEach((card) => {
-        const face = card.querySelector('.think-card-face')
         const rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3.out' })
         const ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3.out' })
-        const b1x = gsap.quickTo(face, '--b1x', { duration: 0.5, ease: 'power2.out' })
-        const b1y = gsap.quickTo(face, '--b1y', { duration: 0.5, ease: 'power2.out' })
-        const b2x = gsap.quickTo(face, '--b2x', { duration: 0.85, ease: 'power2.out' })
-        const b2y = gsap.quickTo(face, '--b2y', { duration: 0.85, ease: 'power2.out' })
-        const b3x = gsap.quickTo(face, '--b3x', { duration: 1.2, ease: 'power2.out' })
-        const b3y = gsap.quickTo(face, '--b3y', { duration: 1.2, ease: 'power2.out' })
-        const sx = gsap.quickTo(face, '--sx', { duration: 0.12, ease: 'power2.out' })
-        const sy = gsap.quickTo(face, '--sy', { duration: 0.12, ease: 'power2.out' })
+        const fx = gsap.quickTo(card, 'x', { duration: 0.6, ease: 'power3.out' })
+        const fy = gsap.quickTo(card, 'y', { duration: 0.6, ease: 'power3.out' })
 
         card.addEventListener('pointermove', (e) => {
           const r = card.getBoundingClientRect()
-          const px = e.clientX - r.left
-          const py = e.clientY - r.top
-          const nx = px / r.width - 0.5
-          const ny = py / r.height - 0.5
+          const nx = (e.clientX - r.left) / r.width - 0.5
+          const ny = (e.clientY - r.top) / r.height - 0.5
           rx(ny * -22)
           ry(nx * 22)
-          b1x(px + 'px'); b1y(py + 'px')
-          b2x(px + 'px'); b2y(py + 'px')
-          b3x(px + 'px'); b3y(py + 'px')
-          sx(px + 'px'); sy(py + 'px')
-          face.style.setProperty('--glow-o', '1')
+          fx(nx * 16)
+          fy(ny * 16)
         })
         card.addEventListener('pointerleave', () => {
           rx(0)
           ry(0)
-          face.style.setProperty('--glow-o', '0')
+          fx(0)
+          fy(0)
         })
       })
     }

@@ -33,21 +33,17 @@
   /* pen speed for line draws: ~600px/s handled in JS */
 }
 
-/* only the five brand hexes ever paint — no derived surfaces */
-html[data-theme='dark'] {
+/* single mode — dark only (Luke-inspired). No theme toggle anymore. */
+:root {
   --ground: var(--ink);
   --stroke: var(--paper);
   --line: var(--charcoal);
   --muted: var(--smoke);
   --media-filter: brightness(0.96);
   color-scheme: dark;
-}
 
-html[data-theme='light'] {
-  --ground: var(--paper);
-  --stroke: var(--ink);
-  --line: var(--ash);
-  --muted: var(--smoke);
-  --media-filter: none;
-  color-scheme: light;
+  /* the cover's aurora shader bottoms out to this exact black (see
+     AURORA_COLORS in gradient-bg.js) — the intro section uses the same hex
+     so the seam between them is invisible, not a lightness jump */
+  --aurora-black: #060409;
 }

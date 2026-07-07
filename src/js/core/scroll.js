@@ -1,10 +1,11 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import Lenis from 'lenis'
 import { motionOK } from './env.js'
 
-gsap.registerPlugin(ScrollTrigger, SplitText)
+gsap.registerPlugin(ScrollTrigger, SplitText, MotionPathPlugin)
 
 export let lenis = null
 

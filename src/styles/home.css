@@ -1,61 +1,221 @@
-/* ————— hero — full-bleed logo intro, morphs into the header logo on scroll ————— */
-.s-hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ————— cover — full-bleed aurora, content pinned to the four corners ————— */
+.s-cover {
   position: relative;
-  text-align: center;
-  padding-block: 0;
-  gap: clamp(20px, 4vh, 40px);
+  min-height: 100svh;
+  padding: clamp(20px, 3.5vw, 48px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'tagline logo'
+    '.       .'
+    'socials actions';
+  align-items: start;
 }
 
-.s-hero .hero-logo {
-  display: block;
-  width: clamp(200px, 30vw, 440px);
+/* top-left — the tagline (Circular body copy) */
+.s-cover .cover-tagline {
+  grid-area: tagline;
+  max-width: min(38ch, 42vw);
   color: var(--stroke);
+  font-size: clamp(0.9rem, 1.35vw, 1.15rem);
+  line-height: 1.5;
 }
 
-.s-hero .hero-logo svg {
+/* top-right — the Tusho wordmark */
+.s-cover .cover-logo {
+  grid-area: logo;
+  display: block;
+  width: clamp(96px, 11vw, 150px);
+  color: var(--stroke);
+  justify-self: end;
+}
+
+.s-cover .cover-logo svg {
   width: 100%;
   height: auto;
   fill: currentColor;
 }
 
-.s-hero .hero-tagline {
-  color: var(--muted);
-  width: clamp(200px, 30vw, 440px);
-  font-size: clamp(0.8rem, 1.3vw, 1rem);
+/* bottom-left — socials (where Luke put "V3.0") */
+.s-cover .cover-socials {
+  grid-area: socials;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  align-self: end;
 }
 
-.s-hero .hero-cue {
+/* socials + actions share one balanced size + white colour + underline-hover */
+.s-cover .cover-socials a,
+.s-cover .cover-action {
+  color: var(--stroke);
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+.s-cover .cover-socials a::after,
+.s-cover .cover-action::after {
+  content: '';
   position: absolute;
-  bottom: clamp(24px, 6vh, 64px);
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--muted);
-  width: 18px;
-}
-
-.s-hero .hero-cue svg {
+  left: 0;
+  bottom: 0;
   width: 100%;
-  height: auto;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--dur-hover) var(--ease-expo);
+}
+
+.s-cover .cover-socials a:hover::after,
+.s-cover .cover-action:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* bottom-right — Work / Know more */
+.s-cover .cover-actions {
+  grid-area: actions;
+  display: flex;
+  gap: clamp(16px, 1.8vw, 28px);
+  align-self: end;
+  justify-self: end;
+}
+
+
+@media (max-width: 767px) {
+  .s-cover {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto auto;
+    grid-template-areas:
+      'logo'
+      'tagline'
+      '.'
+      'socials'
+      'actions';
+    gap: 20px;
+  }
+  .s-cover .cover-logo,
+  .s-cover .cover-actions {
+    justify-self: start;
+  }
+}
+
+/* ————— intro — dark section, portrait centred, off-balance statement ————— */
+.s-intro {
+  position: relative;
+  /* soft top: fades transparent → solid over the first slice, so the aurora
+     bleeds down into the section instead of meeting a hard rectangle edge.
+     Solid colour matches the shader's own black exactly (--aurora-black),
+     not the brand's --ground, so there's no lightness jump at the seam. */
+  background: linear-gradient(to bottom, transparent 0%, var(--aurora-black) 24%);
+  min-height: 100vh;
+  padding: clamp(80px, 16vh, 200px) var(--margin);
+  overflow: hidden;
+}
+
+/* per-word blur reveal on the statement + the sub (Luke pattern) */
+.s-intro .intro-text .word,
+.s-intro .intro-sub .word,
+.s-intro .intro-btn .word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(12px);
+  will-change: opacity, filter;
+}
+
+/* a fixed masking window — the photo inside is taller than the frame and
+   slides vertically on scroll (parallax reveal), showing different slices */
+.s-intro .intro-photo-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: min(42vw, 500px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 14px;
+  will-change: transform;
+}
+
+.s-intro .intro-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* the frame's ratio matches the real photo exactly (3:4) — cover here
+     never crops anything, it just fills the frame edge-to-edge. The old
+     128%-tall + slide trick did crop the top/bottom; the parallax now
+     moves the whole wrap instead, so the photo itself is never cut. */
+  object-fit: cover;
   display: block;
+  filter: var(--media-filter);
 }
 
-.s-hero .hero-cue-dot {
-  animation: hero-cue-bob 1.6s ease-in-out infinite;
+/* the copy sits over/around the centred photo, deliberately off-balance:
+   a wide statement pulled left, a narrow sub pushed down-and-right */
+.s-intro .intro-text {
+  position: relative;
+  z-index: 2;
+  width: min(52%, 30rem);
+  margin-top: 6vh;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.4vw, 3.1rem);
+  line-height: 1.32;
+  color: var(--stroke);
 }
 
-@keyframes hero-cue-bob {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(9px); opacity: 0.4; }
+.s-intro .intro-accent {
+  font-style: italic;
+  color: var(--muted);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .s-hero .hero-cue-dot {
-    animation: none;
+.s-intro .intro-sub {
+  position: relative;
+  z-index: 2;
+  width: min(30%, 22rem);
+  margin-left: auto;
+  margin-top: 30vh;
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.s-intro .intro-btn {
+  position: relative;
+  z-index: 2;
+  width: min(30%, 22rem);
+  margin-left: auto;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .s-intro .intro-photo-wrap {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto clamp(32px, 8vh, 72px);
+    width: min(80vw, 420px);
+  }
+  .s-intro {
+    display: flex;
+    flex-direction: column;
+  }
+  .s-intro .intro-text,
+  .s-intro .intro-sub,
+  .s-intro .intro-btn {
+    width: 100%;
+    margin-left: 0;
+    margin-top: clamp(20px, 4vh, 40px);
   }
 }
 
@@ -317,54 +477,82 @@
   border-top: 1px solid var(--line);
 }
 
-/* home teaser: an asymmetric bento, not a tidy grid — cards fly up from
-   below on first reveal, then drift at their own parallax speed as the
-   page scrolls (no pin, never fully stopped). */
+/* ————— web projects — Trionn arc conveyor → scattered grid ————— */
 .s-web {
-  overflow: clip;
+  position: relative;
 }
 
-.s-web .web-cloud {
-  padding-inline: var(--margin);
+.s-web .web-stage {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (min-width: 1080px) {
-  .s-web .web-cloud {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: clamp(28px, 3.5vw, 56px);
-    padding-block: clamp(40px, 8vh, 96px);
-  }
-
-  /* deliberately uneven spans + vertical offsets — a scattered bento,
-     not a clean matrix */
-  .s-web .web-card:nth-child(1) {
-    grid-column: 1 / 8;
-    transform: translateY(-2vh);
-  }
-
-  .s-web .web-card:nth-child(2) {
-    grid-column: 8 / 13;
-    transform: translateY(8vh);
-  }
-
-  .s-web .web-card:nth-child(3) {
-    grid-column: 1 / 6;
-    transform: translateY(-4vh);
-  }
-
-  .s-web .web-card:nth-child(4) {
-    grid-column: 6 / 13;
-    transform: translateY(2vh);
-  }
+/* oversized background wordmark (like Trionn's MOTION / DESIGN) */
+.s-web .web-bigtext {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(4rem, 15vw, 15rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--stroke) 7%, transparent);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
 }
 
-@media (max-width: 1079px) {
-  .s-web .web-cloud {
-    display: grid;
-    gap: clamp(40px, 8vh, 72px);
-    padding-block: clamp(24px, 6vh, 56px);
-  }
+.s-web .web-bigtext--top {
+  top: 5vh;
+}
+
+.s-web .web-bigtext--bottom {
+  bottom: 5vh;
+}
+
+/* centred title block the cards arc around */
+.s-web .web-center {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.s-web .web-center .head-label {
+  color: var(--muted);
+}
+
+.s-web .web-lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.6vw, 2.1rem);
+  line-height: 1.2;
+  color: var(--stroke);
+}
+
+/* desktop: the arc layer holds the cards, absolutely positioned for the path */
+.s-web .web-arc.is-arc {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.s-web .web-arc.is-arc .web-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(220px, 21vw, 340px);
+  pointer-events: auto;
+  will-change: transform;
 }
 
 .s-web .web-card {
@@ -374,16 +562,36 @@
 .s-web .web-card-media {
   position: relative;
   border-radius: 12px;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+  /* the gentle "water" float once the cards have settled */
+  animation: web-float 6s ease-in-out infinite;
+}
+
+.s-web .web-card:nth-child(2) .web-card-media {
+  animation-delay: -1.5s;
+}
+.s-web .web-card:nth-child(3) .web-card-media {
+  animation-delay: -3s;
+}
+.s-web .web-card:nth-child(4) .web-card-media {
+  animation-delay: -4.5s;
+}
+
+@keyframes web-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.4%);
+  }
 }
 
 .s-web .web-card-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* real screenshots carry their most identifying content — nav, hero — up
-     top; crop from the bottom instead of the center so it never gets lost */
   object-position: center top;
   display: block;
   transition: transform 0.6s var(--ease-expo);
@@ -391,23 +599,20 @@
 
 .s-web .web-card:hover .web-card-media img,
 .s-web .web-card:focus-visible .web-card-media img {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .s-web .web-card-info {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding-block: 14px 0;
+  gap: 12px;
+  padding-block: 10px 0;
+  color: var(--muted);
 }
 
-.s-web .web-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: var(--muted);
-  white-space: nowrap;
+.s-web .web-card-title {
+  color: var(--stroke);
 }
 
 .s-web .web-card-live {
@@ -415,6 +620,34 @@
   border-bottom: 1px solid var(--stroke);
   padding-bottom: 1px;
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-web .web-card-media {
+    animation: none;
+  }
+}
+
+/* mobile / reduced-motion: a plain stacked grid, no pin, no arc */
+.s-web .web-arc.is-stack {
+  display: grid;
+  gap: clamp(32px, 8vh, 64px);
+  padding: clamp(40px, 8vh, 80px) var(--margin);
+}
+
+@media (max-width: 1079px) {
+  .s-web .web-stage {
+    display: block;
+    min-height: auto;
+    overflow: visible;
+    padding-block: clamp(56px, 10vh, 100px);
+  }
+  .s-web .web-bigtext {
+    display: none; /* the oversized wordmark is a desktop-only flourish */
+  }
+  .s-web .web-center {
+    margin: 0 auto clamp(28px, 6vh, 56px);
+  }
 }
 
 /* ————— liquid glass — reusable panel treatment, theme-aware ————— */
@@ -593,51 +826,6 @@
 .s-think .think-card-face > * {
   position: relative;
   transform: translateZ(28px);
-}
-
-/* the "venom" hover effect — registered so JS can smoothly tween these as
-   plain numbers via gsap.quickTo, each blob lagging the cursor by a
-   different amount for an organic, trailing lava-tendril feel */
-@property --b1x { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --b1y { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --b2x { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --b2y { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --b3x { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --b3y { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --sx { syntax: '<length>'; inherits: true; initial-value: 0px; }
-@property --sy { syntax: '<length>'; inherits: true; initial-value: 0px; }
-
-/* blurred, slow-lagging blobs in our own ink/smoke/ash tones — normal
-   blending (not difference), so it reads plainly as "black and ash/gray"
-   rather than a theme-inverted trick. inset:0 matches this pseudo's box
-   exactly to the face's own box, so --b1x/--b1y (measured from the card's
-   rect in JS) land in the right place instead of drifting into a corner */
-.s-think .think-card-face::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: calc(var(--glow-o, 0) * 0.6);
-  background:
-    radial-gradient(circle 150px at var(--b1x) var(--b1y), var(--stroke), transparent 68%),
-    radial-gradient(circle 125px at var(--b2x) var(--b2y), var(--smoke), transparent 68%),
-    radial-gradient(circle 170px at var(--b3x) var(--b3y), var(--ash), transparent 70%);
-  filter: blur(24px);
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-
-/* a tight, near-lagless hotspot for the "shine" — screened on top in paper
-   white so it always reads as a bright glossy pop, regardless of theme */
-.s-think .think-card-face::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: var(--glow-o, 0);
-  mix-blend-mode: screen;
-  background: radial-gradient(circle 50px at var(--sx) var(--sy), var(--paper), transparent 75%);
-  filter: blur(3px);
-  transition: opacity 0.35s ease;
-  pointer-events: none;
 }
 
 .s-think .think-card-number {

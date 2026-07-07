@@ -75,49 +75,7 @@ body[data-page='home'] .site-header {
   overflow: visible;
 }
 
-/* day/night lives inside the O of the logo — click it to flip the world.
-   The dot only appears on hover (a clickable hint), never at rest. */
-.brand-mark .o-fill {
-  r: 0;
-  transition: r var(--dur-hover) var(--ease-expo);
-}
-
-.o-toggle {
-  position: absolute;
-  top: -8%;
-  right: -4%;
-  width: 40%;
-  height: 94%;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.o-toggle:hover ~ svg .o-fill,
-.brand-mark:has(.o-toggle:hover) .o-fill {
-  r: 5px;
-}
-
-/* one-time hint bubble pointing at the clickable O — blinks in, then gone */
-.brand-mark .o-hint {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 10px);
-  transform: translateY(-50%);
-  white-space: nowrap;
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  color: inherit;
-  background: var(--ground);
-  border: 1px solid var(--line);
-  padding: 5px 10px;
-  border-radius: 20px;
-  pointer-events: none;
-  z-index: 6;
-}
-
-/* scroll progress — the spine's drawn length, replacing the scrollbar at the right edge */
+/* scroll progress — the spine's drawn length, on inner pages */
 .spine-progress {
   position: fixed;
   top: 0;
@@ -131,26 +89,125 @@ body[data-page='home'] .site-header {
   pointer-events: none;
 }
 
-/* ————— buttons ————— */
-.btn-line {
-  display: inline-flex;
+/* ————— section timeline — right-edge segmented scroll indicator (home) ————— */
+.scroll-timeline {
+  position: fixed;
+  right: clamp(16px, 2vw, 32px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding-block: 8px;
-  position: relative;
+  height: 72vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
-.btn-line .btn-rule {
-  display: block;
-  width: 40px;
-  height: 1px;
+.scroll-timeline.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.st-bar {
+  position: relative;
+  width: 2px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.st-seg {
+  flex: 1;
+  position: relative;
+  background: color-mix(in srgb, var(--stroke) 12%, transparent);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.st-seg-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
   background: var(--stroke);
+}
+
+.st-label {
+  position: absolute;
+  right: calc(100% + 14px);
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  color: var(--stroke);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.scroll-pct {
+  position: fixed;
+  left: clamp(16px, 2vw, 32px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.scroll-pct.visible {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .scroll-timeline,
+  .scroll-pct {
+    display: none;
+  }
+}
+
+/* ————— buttons ————— */
+/* the one button style, sitewide: text with an underline that sweeps in
+   beneath it on hover (in from the left, out to the right) — same treatment
+   as the cover's social links. No more line-on-the-left rule. */
+.btn-line {
+  display: inline-block;
+  padding-bottom: 3px;
+  position: relative;
+  color: var(--stroke);
+}
+
+/* the old left rule is retired but the markup still ships <span class="btn-rule"> */
+.btn-line .btn-rule {
+  display: none;
+}
+
+.btn-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
   transform-origin: right center;
   transition: transform var(--dur-hover) var(--ease-expo);
 }
 
-.btn-line:hover .btn-rule {
-  transform: scaleX(1.6);
+.btn-line:hover::after,
+.btn-line:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
 }
 
 /* ————— work cards ————— */
@@ -426,13 +483,14 @@ body.fb-on {
   pointer-events: none;
 }
 
-/* ————— THE FIELD — seamless ambient gradient behind the whole scrollable page ————— */
+/* ————— THE AURORA — mouse-reactive gradient field behind the cover ————— */
 .gradient-bg {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   user-select: none;
+  overflow: hidden;
 }
 
 main {

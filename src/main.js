@@ -1,8 +1,8 @@
-// Home entry — render everything from the API-shaped JSON while the preloader
-// covers, then hand off to the choreography.
-import { injectChrome, wireOToggle } from './js/core/chrome.js'
+// Home entry — render everything from the API-shaped JSON, then hand off to
+// the choreography.
+import { injectChrome } from './js/core/chrome.js'
 import { api } from './js/core/data.js'
-import { wordmarkWithFill } from './js/core/mark.js'
+import { wordmark } from './js/core/mark.js'
 import { playPreloader } from './js/home/preloader.js'
 import { initHero } from './js/home/hero.js'
 import {
@@ -32,10 +32,12 @@ async function boot() {
 
   document.title = sections.meta.title
 
-  // hero copy — the hero's O is a real theme toggle too, same as the header's
-  document.querySelector('.hero-logo .brand-home').innerHTML = wordmarkWithFill
-  wireOToggle(document.querySelector('.hero-logo .o-toggle'))
-  document.querySelector('.hero-tagline').textContent = sections.hero.tagline
+  // cover — the wordmark logo (top-right) + socials (bottom-left)
+  document.querySelector('.cover-logo').innerHTML = wordmark
+  const socials = sections.footer?.socials || []
+  document.querySelector('.cover-socials').innerHTML = socials
+    .map((s) => `<a href="${s.url}" target="_blank" rel="noreferrer">${s.label}</a>`)
+    .join('')
 
   renderWhatIDo(sections.what_i_do)
   renderMotion(motion)
