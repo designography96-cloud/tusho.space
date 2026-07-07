@@ -1,34 +1,38 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tusho — Motion designer & creative problem solver</title>
     <meta name="description" content="Motion design, brand design and digital experiences by Tusho. Built in Bangladesh. Trusted globally." />
     <link rel="icon" type="image/svg+xml" href="/tusho.space/assets/favicon-o-2T8M1t_g.svg" />
-    <script>
-      document.documentElement.dataset.theme =
-        (function () { try { return localStorage.getItem('tusho-theme') } catch (e) { return null } })() || 'light'
-    </script>
-    <script type="module" crossorigin src="/tusho.space/assets/home-Wdgjreub.js"></script>
-    <link rel="modulepreload" crossorigin href="/tusho.space/assets/draw-DpJMH_Vp.js">
-    <link rel="stylesheet" crossorigin href="/tusho.space/assets/draw-DAj6FuCw.css">
+    <script type="module" crossorigin src="/tusho.space/assets/home-DUsAXtJ9.js"></script>
+    <link rel="modulepreload" crossorigin href="/tusho.space/assets/draw-Bp_vXOvt.js">
+    <link rel="stylesheet" crossorigin href="/tusho.space/assets/draw-BFbZOAfl.css">
   </head>
   <body data-page="home">
     <main id="main">
-      <!-- 1/2 · hero — big logo intro, morphs into the header logo on scroll -->
-      <section class="s-hero section container" data-fbname="Hero">
-        <span class="hero-logo brand-mark">
-          <a class="brand-home" href="./" aria-label="Tusho — home"></a>
-          <button class="o-toggle" type="button" aria-label="Switch between dark and light mode"></button>
-        </span>
-        <p class="hero-tagline t-body"></p>
-        <span class="hero-cue" aria-hidden="true">
-          <svg viewBox="0 0 18 28" fill="none">
-            <rect x="1" y="1" width="16" height="26" rx="8" stroke="currentColor" stroke-width="1.4"/>
-            <circle class="hero-cue-dot" cx="9" cy="9" r="1.6" fill="currentColor"/>
-          </svg>
-        </span>
+      <!-- 1 · cover — full-bleed mouse-reactive aurora, content in the 4 corners -->
+      <section class="s-cover" data-fbname="Cover">
+        <p class="cover-tagline t-body">A quiet creative — I bring ideas to life, between motion, detail and softness.</p>
+        <a class="cover-logo brand-mark" href="./" aria-label="Tusho — home"></a>
+        <nav class="cover-socials t-label" aria-label="Social"></nav>
+        <nav class="cover-actions" aria-label="Explore">
+          <a class="cover-action" href="motion.html">Work</a>
+          <a class="cover-action" href="about.html">Know more</a>
+        </nav>
+      </section>
+
+      <!-- 2 · intro — dark section, portrait centered, off-balance statement (Luke pattern) -->
+      <section class="s-intro" data-fbname="Intro">
+        <div class="intro-photo-wrap">
+          <img class="intro-photo" src="/tusho.space/assets/tusher-potrait.md-B9RU64pV.png" alt="Portrait of Tusho" decoding="async" />
+        </div>
+        <p class="intro-text">As a <span class="intro-accent">creative developer</span>, I craft bespoke web experiences, blending technical precision and <span class="intro-accent">emotion</span>.</p>
+        <p class="intro-sub">I'm Tusho. A passionate creative producing memorable digital experiences, always chasing a symbiosis between art and information.</p>
+        <div class="intro-btn">
+          <a class="btn-line t-label" href="about.html"><span class="btn-rule"></span>Know more</a>
+        </div>
       </section>
 
       <!-- 3 · what i do -->
@@ -69,19 +73,17 @@
         </div>
       </section>
 
-      <!-- 6 · web projects -->
-      <section class="s-web section" data-fbname="Website projects">
-        <div class="container">
-          <div class="section-head">
-            <h2 class="t-h2">Website projects</h2>
+      <!-- 6 · web projects — Trionn-style arc conveyor resolving to a scattered grid -->
+      <section class="s-web" data-fbname="Website projects">
+        <div class="web-stage">
+          <span class="web-bigtext web-bigtext--top" aria-hidden="true">WEBSITE</span>
+          <span class="web-bigtext web-bigtext--bottom" aria-hidden="true">PROJECTS</span>
+          <div class="web-center">
             <span class="head-label t-label">Directed and built</span>
+            <p class="web-lead">Websites planned, directed and built — brief to deploy.</p>
+            <a class="btn-line t-label web-seeall" href="web.html"><span class="btn-rule"></span>See all web</a>
           </div>
-        </div>
-        <div class="web-cloud"></div>
-        <div class="container">
-        <div class="see-all" style="display:flex;justify-content:flex-end;margin-top:clamp(48px,10vh,120px)">
-          <a class="btn-line t-label" href="web.html"><span class="btn-rule"></span>See all web</a>
-        </div>
+          <div class="web-arc"></div>
         </div>
       </section>
 
